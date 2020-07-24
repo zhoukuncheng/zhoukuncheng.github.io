@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Ceres Cheng" />
+	
+	
+	
+	<title>编译  CPython 心得  ｜ 编程随笔</title>
+	
+    
+    
+    <meta name="description" content="什么情况下需要自己编译 CPython 大多数操作系统都提供了编译好的 CPython 版本，一般直接通过包管理器安装就能满足需求，但是某些情况下，就需要自己编译 CPython 来满足特定需求了： 操作系统提供的 Python 版本太低，并且 Python 官网、系统包管理源" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, Programming" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="http://localhost:1313/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">Archive</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">Tags</a>
+            </li>
+            
+            <li>
+                <a href="/categories/">Categories</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="http://localhost:1313/">
+                    <span>编程随笔</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title">记录编程心得体会</p>
+            <div class="my_socials">
+                
+                
+                <a href="https://github.com/CeresCa" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                <a href="http://localhost:1313/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/python-build/'>编译  CPython 心得 </a></h2>
+                        <span class="date">2020.07.24</span>
+                    </div>
+                    <br>
+                    <aside style="opacity: 0.85; color: darkcyan;">
+                        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#什么情况下需要自己编译-cpython">什么情况下需要自己编译 CPython</a></li>
+    <li><a href="#低版本-linux-发行版上编译-cpython-时的注意事项">低版本 Linux 发行版上编译 CPython 时的注意事项</a>
+      <ul>
+        <li><a href="#openssl">OpenSSL</a></li>
+        <li><a href="#sqlite">SQLite</a></li>
+      </ul>
+    </li>
+    <li><a href="#影响性能的编译参数">影响性能的编译参数</a>
+      <ul>
+        <li><a href="#--enable-optimizations">&ndash;enable-optimizations</a></li>
+        <li><a href="#-fno-semantic-interposition">-fno-semantic-interposition</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+                    </aside>
+                    <br>
+                    <div class="post_content markdown"><h2 id="什么情况下需要自己编译-cpython">什么情况下需要自己编译 CPython</h2>
+<p>大多数操作系统都提供了编译好的 CPython 版本，一般直接通过包管理器安装就能满足需求，但是某些情况下，就需要自己编译 CPython 来满足特定需求了：</p>
+<ul>
+<li>
+<p>操作系统提供的 Python 版本太低，并且 Python 官网、系统包管理源没有提供预编译的新版本 Python</p>
+</li>
+<li>
+<p>预编译版本不符合性能、扩展等方面的要求，比如没有开启编译器优化、OpenSSL/SQLite 版本不满足要求等</p>
+</li>
+<li>
+<p>参与 CPython 开发或者尝鲜，尝试 Alpha/Beta/RC 等版本的 Python</p>
+</li>
+</ul>
+<p>​     <br>
+​</p>
+<h2 id="低版本-linux-发行版上编译-cpython-时的注意事项">低版本 Linux 发行版上编译 CPython 时的注意事项</h2>
+<h3 id="openssl">OpenSSL</h3>
+<p>因为 CentOS 6 官方源中的 OpenSSL 版本过低，不满足 Python 3.7 及之后的要求，所以直接 configure &amp; make 会报错，解决办法：</p>
+<p>参考 <a href="https://benad.me/blog/2018/07/17/python-3.7-on-centos-6/">Python 3.7 on CentOS 6</a> , 提前编译 OpenSSL,  编译 CPython 时修改  Modules/Setup 文件，并且指定环境变量 <code>LDFLAGS=&quot;-Wl,-rpath=/usr/local/openssl11/lib&quot;</code> , 指定参数 <code>-with-openssl=/usr/local/openssl11</code> 。</p>
+<h3 id="sqlite">SQLite</h3>
+<p>Jupyter 等软件依赖 SQLite,  所以编译 CPython 时不仅要注意 SQLite 版本，也要开启 <code>--enable-loadable-sqlite-extensions</code> , 参考：<a href="https://stackoverflow.com/questions/57977481/how-to-use-enable-load-extension-from-sqlite3">How to use enable_load_extension from sqlite3?</a></p>
+<p>​     <br>
+​</p>
+<h2 id="影响性能的编译参数">影响性能的编译参数</h2>
+<h3 id="--enable-optimizations">&ndash;enable-optimizations</h3>
+<p>根据 StackOverflow 这个问题：<a href="https://stackoverflow.com/questions/41405728/what-does-enable-optimizations-do-while-compiling-python">what does &ndash;enable-optimizations do while compiling python?</a></p>
+<p><code>enable-optimizations</code> 会开启 <code>PGO</code> 和 <code>LTO</code> 的编译器优化，PGO会进行两次编译，首选编译一个未优化版本，然后运行 benchmark 测试，根据测试指导第二次优化编译，</p>
+<p>优点是会编译出更有效的 CPython 二进制版本，</p>
+<p>缺点是一是对编译器版本有要求，低版本 GCC PGO 编译时会报错，二是编译时间会大大增加，多了 benchmark 和二次编译的时间，所以 <code>make</code> 时可以考虑加上 <code> -j</code> 参数，利用机器多核减少编译时间。</p>
+<h4 id="-march">-march</h4>
+<p>指定CPU架构也可能影响编译后 CPython 的性能，扩展阅读： <a href="https://atleastfornow.net/posts/py3-enable-optimisations/">Compile-time Optimisations on Python 3</a></p>
+<h3 id="-fno-semantic-interposition">-fno-semantic-interposition</h3>
+<p>参考 <a href="https://developers.redhat.com/blog/2020/06/25/red-hat-enterprise-linux-8-2-brings-faster-python-3-8-run-speeds/">Red Hat Enterprise Linux 8.2 brings faster Python 3.8 run speeds</a> ，</p>
+<p>GCC 编译时增加 <code>-fno-semantic-interposition</code> 选项，在 Red Hat / Federa 发行版上，禁用 Semantic interposition ，带来最高 30% 的性能提升。</p>
+<p>当然，以上编译参数都和特定发行版、编译器版本相关，不能简单认为适用于所有环境，评估性能的最佳方式还是做 benchmark 。</p>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="http://localhost:1313/tags/python/">Python</a>
+                                    
+                                    <a href="http://localhost:1313/tags/gcc/">GCC</a>
+                                    
+                                    <a href="http://localhost:1313/tags/linux/">Linux</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+    <script src="http://localhost:1313/js/jquery-3.5.1.min.js"></script>
+<link href="http://localhost:1313/css/fancybox.min.css" rel="stylesheet">
+<script src="http://localhost:1313/js/fancybox.min.js"></script>
+<script src="http://localhost:1313/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+</body>
+
+</html>
