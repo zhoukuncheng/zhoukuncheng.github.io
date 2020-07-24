@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Python&#34; on 编程随笔</title>
-    <link>http://localhost:1313/categories/python/</link>
+    <link>https://CeresCa.github.io/categories/python/</link>
     <description>Recent content in Python&#34; on 编程随笔</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <lastBuildDate>Fri, 24 Jul 2020 01:11:34 +0800</lastBuildDate>
     
-	<atom:link href="http://localhost:1313/categories/python/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://CeresCa.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>编译  CPython 心得 </title>
-      <link>http://localhost:1313/posts/python-build/</link>
+      <link>https://CeresCa.github.io/posts/python-build/</link>
       <pubDate>Fri, 24 Jul 2020 01:11:34 +0800</pubDate>
       
-      <guid>http://localhost:1313/posts/python-build/</guid>
+      <guid>https://CeresCa.github.io/posts/python-build/</guid>
       <description>什么情况下需要自己编译 CPython 大多数操作系统都提供了编译好的 CPython 版本，一般直接通过包管理器安装就能满足需求，但是某些情况下，就需要自己编译 CPython 来满足特定需求了： 操作系统提供的 Python 版本太低，并且 Python 官网、系统包管理源</description>
     </item>
     
