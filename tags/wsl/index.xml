@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>WSL on 编程随笔</title>
+    <link>https://CeresCa.github.io/tags/wsl/</link>
+    <description>Recent content in WSL on 编程随笔</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Tue, 08 Sep 2020 01:46:05 +0800</lastBuildDate>
+    
+	<atom:link href="https://CeresCa.github.io/tags/wsl/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Windows 开发环境配置，2020 年版</title>
+      <link>https://CeresCa.github.io/posts/windows-dev-env-2020/</link>
+      <pubDate>Tue, 08 Sep 2020 01:46:05 +0800</pubDate>
+      
+      <guid>https://CeresCa.github.io/posts/windows-dev-env-2020/</guid>
+      <description>为什么需要在 Windows 上配置开发环境 本文适用范围 Windows 早期版本解决方案 Windows 最近版本开发体验的巨大变化 折腾细节 踩坑过程 总结</description>
+    </item>
+    
+  </channel>
+</rss>

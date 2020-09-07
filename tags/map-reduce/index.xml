@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Map Reduce on 编程随笔</title>
+    <link>https://CeresCa.github.io/tags/map-reduce/</link>
+    <description>Recent content in Map Reduce on 编程随笔</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Tue, 08 Sep 2020 01:43:18 +0800</lastBuildDate>
+    
+	<atom:link href="https://CeresCa.github.io/tags/map-reduce/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>MIT 6.824: Distributed Systems 系列：Map Reduce</title>
+      <link>https://CeresCa.github.io/posts/mit-6824-02-mr/</link>
+      <pubDate>Tue, 08 Sep 2020 01:43:18 +0800</pubDate>
+      
+      <guid>https://CeresCa.github.io/posts/mit-6824-02-mr/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

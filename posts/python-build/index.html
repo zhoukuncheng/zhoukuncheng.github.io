@@ -76,7 +76,7 @@
             </h1>
         </div>
         <div class="description">
-            <p class="sub_title">记录编程心得体会</p>
+            <p class="sub_title">一个随性的博客，包括但不限于编程、工作方面</p>
             <div class="my_socials">
                 
                 
@@ -143,7 +143,7 @@
 <h2 id="影响性能的编译参数">影响性能的编译参数</h2>
 <h3 id="--enable-optimizations">&ndash;enable-optimizations</h3>
 <p>根据 StackOverflow 这个问题：<a href="https://stackoverflow.com/questions/41405728/what-does-enable-optimizations-do-while-compiling-python">what does &ndash;enable-optimizations do while compiling python?</a></p>
-<p><code>enable-optimizations</code> 会开启 <code>PGO</code> 和 <code>LTO</code> 的编译器优化，PGO会进行两次编译，首选编译一个未优化版本，然后运行 benchmark 测试，根据测试指导第二次优化编译，</p>
+<p><code>enable-optimizations</code> 会开启 <code>PGO</code> 和 <code>LTO</code> 的编译器优化，PGO会进行两次编译，首次编译后再运行 benchmark 测试，根据测试指导第二次优化编译，</p>
 <p>优点是会编译出更有效的 CPython 二进制版本，</p>
 <p>缺点是一是对编译器版本有要求，低版本 GCC PGO 编译时会报错，二是编译时间会大大增加，多了 benchmark 和二次编译的时间，所以 <code>make</code> 时可以考虑加上 <code> -j</code> 参数，利用机器多核减少编译时间。</p>
 <h4 id="-march">-march</h4>

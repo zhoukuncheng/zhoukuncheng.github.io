@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Distributed Systems on 编程随笔</title>
+    <link>https://CeresCa.github.io/categories/distributed-systems/</link>
+    <description>Recent content in Distributed Systems on 编程随笔</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Tue, 08 Sep 2020 01:43:18 +0800</lastBuildDate>
+    
+	<atom:link href="https://CeresCa.github.io/categories/distributed-systems/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>MIT 6.824: Distributed Systems 系列：Map Reduce</title>
+      <link>https://CeresCa.github.io/posts/mit-6824-02-mr/</link>
+      <pubDate>Tue, 08 Sep 2020 01:43:18 +0800</pubDate>
+      
+      <guid>https://CeresCa.github.io/posts/mit-6824-02-mr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MIT 6.824: Distributed Systems 系列：简介</title>
+      <link>https://CeresCa.github.io/posts/mit-6824-01-intro/</link>
+      <pubDate>Fri, 24 Jul 2020 14:26:34 +0800</pubDate>
+      
+      <guid>https://CeresCa.github.io/posts/mit-6824-01-intro/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
