@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Ceres Cheng" />
+	
+	
+	
+	<title>Distributed Systems for Fun and Profit 笔记 ｜ 编程随笔</title>
+	
+    
+    
+    <meta name="description" content="0. 前言 &amp;ldquo;Distributed Systems for Fun and Profit&amp;rdquo; 是 mixu 2013 年在 网络上 免费发布的一本介绍分布式系统的小册子。 分布式的两种结果： 信息以光速传播 独立节点独自失败 分布式系统处理距离和多个节点的问题 1. 从高层次角度看分布式系统 计算机的基本任务 存储" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, Programming" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://CeresCa.github.io/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://CeresCa.github.io/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://CeresCa.github.io/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://CeresCa.github.io/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">Archive</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">Tags</a>
+            </li>
+            
+            <li>
+                <a href="/categories/">Categories</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://CeresCa.github.io/">
+                    <span>编程随笔</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title">一个随性的博客，包括但不限于编程、工作方面</p>
+            <div class="my_socials">
+                
+                
+                <a href="https://github.com/CeresCa" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                <a href="https://CeresCa.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/distributed-systems-for-fun-and-profit-notes/'>Distributed Systems for Fun and Profit 笔记</a></h2>
+                        <span class="date">2020.09.11</span>
+                    </div>
+                    <br>
+                    <aside style="opacity: 0.85; color: darkcyan;">
+                        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#0-前言">0. 前言</a></li>
+    <li><a href="#1-从高层次角度看分布式系统">1. 从高层次角度看分布式系统</a>
+      <ul>
+        <li><a href="#实现目标可扩展性等优点">实现目标：可扩展性等优点</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+                    </aside>
+                    <br>
+                    <div class="post_content markdown"><h2 id="0-前言">0. 前言</h2>
+<p>&ldquo;Distributed Systems for Fun and Profit&rdquo; 是 mixu 2013 年在 <a href="http://book.mixu.net/distsys/index.html">网络上</a> 免费发布的一本介绍分布式系统的小册子。</p>
+<p>分布式的两种结果：</p>
+<ul>
+<li>信息以光速传播</li>
+<li>独立节点独自失败</li>
+</ul>
+<p>分布式系统处理距离和多个节点的问题</p>
+<h2 id="1-从高层次角度看分布式系统">1. 从高层次角度看分布式系统</h2>
+<p>计算机的基本任务</p>
+<ul>
+<li>
+<p>存储</p>
+</li>
+<li>
+<p>计算</p>
+</li>
+</ul>
+<p>分布式编程就是用多机解决在单机上的相同问题，通常此问题单机已经不能满足要求。</p>
+<p>小规模时，单个节点上升级硬件可以解决问题，但随着问题规模增大，单节点升级硬件无法解决或者成本过高时就需要分布式系统。当前最值得的是中档的商业硬件，通过容错软件降低成本。</p>
+<p><img src="http://book.mixu.net/distsys/images/barroso_holzle.png" alt=""></p>
+<p>增加新机器不会像理想情况一样线性增加性能和容量。</p>
+<p>本文重点是讨论数据中心上的分布式编程。</p>
+<h3 id="实现目标可扩展性等优点">实现目标：可扩展性等优点</h3>
+<h4 id="可扩展性">可扩展性</h4>
+<p>可扩展性（Scalability）：系统、网络或进程有能力处理不断增长的工作量的能力，或者为了适应这种增长而进行扩展的能力</p>
+<ul>
+<li>大小可扩展</li>
+<li>地理可扩展</li>
+<li>管理可扩展</li>
+</ul>
+<h4 id="性能与延迟">性能与延迟</h4>
+<p>性能（Performance）：参照资源和时间，系统完成的有效工作量</p>
+<p>延迟（Latency）：重要是的新数据在系统中出现的时间，分布式系统中受制于光速和硬盘速度等</p>
+<h4 id="可用性容错">可用性（容错）</h4>
+<p>可用性（Availability）：系统处于正常运行状态的时间比例， Availability = uptime / (uptime + downtime)</p>
+<p>分布式系统可以通过冗余实现容忍部分故障</p>
+<p>容错（Fault tolerance）：故障发生后系统以明确定义的方式运行的能力</p>
+<h4 id="制约">制约</h4>
+<p>分布式系统受两个物理因素的约束：</p>
+<ul>
+<li>节点数（随所需的存储和计算能力而增加）</li>
+<li>节点之间的距离（信息最多以光速传播）</li>
+</ul>
+<p>性能和可用性由外部定义，通常表述为SLA（服务级别协议）</p>
+<h4 id="抽象和模型">抽象和模型</h4>
+<p>抽象使事情变得更易于管理，模型精确描述分布式系统的关键特性。</p>
+<p>如：</p>
+<ul>
+<li>
+<p>系统模型（异步/同步）</p>
+</li>
+<li>
+<p>失败模型（崩溃失败，分区，拜占庭）</p>
+</li>
+<li>
+<p>一致性模型（强一致，最终一致）</p>
+</li>
+</ul>
+<h4 id="设计技巧分区和复制">设计技巧：分区和复制</h4>
+<p><img src="http://book.mixu.net/distsys/images/part-repl.png" alt=""></p>
+<h5 id="分区partition">分区（Partition）</h5>
+<p>将大数据集划分为小的独立集</p>
+<ul>
+<li>分区通过限制要检查的数据量并在同一分区中定位相关数据来提高性能</li>
+<li>分区通过允许分区独立发生故障来提高可用性</li>
+</ul>
+<h5 id="复制replication">复制（Replication）</h5>
+<p>在多机上复制相同的数据，是对抗延迟的主要办法</p>
+<ul>
+<li>通过增加新数据副本上的计算能力和带宽来提高性能</li>
+<li>通过创建数据的其他副本来提高可用性</li>
+</ul>
+<p>复制需要遵循一致性模型</p>
+</div>
+                    <div class="post_footer">
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+    <script src="https://CeresCa.github.io/js/jquery-3.5.1.min.js"></script>
+<link href="https://CeresCa.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://CeresCa.github.io/js/fancybox.min.js"></script>
+<script src="https://CeresCa.github.io/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+</body>
+
+</html>
