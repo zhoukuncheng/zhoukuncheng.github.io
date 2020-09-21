@@ -6,10 +6,19 @@
     <description>Recent content in Posts on 编程随笔</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Fri, 11 Sep 2020 01:51:32 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 15 Sep 2020 09:22:15 +0800</lastBuildDate>
     
 	<atom:link href="https://CeresCa.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Distributed Systems for Fun and Profit 笔记（二）</title>
+      <link>https://CeresCa.github.io/posts/distributed-systems-for-fun-and-profit-part2/</link>
+      <pubDate>Tue, 15 Sep 2020 09:22:15 +0800</pubDate>
+      
+      <guid>https://CeresCa.github.io/posts/distributed-systems-for-fun-and-profit-part2/</guid>
+      <description>2. 抽象的上下不同层次 系统模型 分布式系统中的程序： 在独立节点上同时运行 通过可能引入不确定性和消息丢失的网络连接 并且没有共享内存或共享时钟 系统模型列举了与特定系统设计相关的许多假设，实现分布式系统的环境和</description>
+    </item>
     
     <item>
       <title>Distributed Systems for Fun and Profit 笔记 （一）</title>

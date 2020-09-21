@@ -8,11 +8,11 @@
 	
 	
 	
-	<title>Posts ｜ 编程随笔</title>
+	<title>Distributed Systems for Fun and Profit 笔记（二） ｜ 编程随笔</title>
 	
     
     
-    <meta name="description" content="一个随性的博客，包括但不限于编程、工作方面" />
+    <meta name="description" content="2. 抽象的上下不同层次 系统模型 分布式系统中的程序： 在独立节点上同时运行 通过可能引入不确定性和消息丢失的网络连接 并且没有共享内存或共享时钟 系统模型列举了与特定系统设计相关的许多假设，实现分布式系统的环境和" />
     
 
     
@@ -21,8 +21,6 @@
     
 
 	
-	<link rel="alternate" type="application/rss+xml" href="https://CeresCa.github.io/posts/index.xml" title="编程随笔" />
-    
     
     <link rel="shortcut icon" href="https://CeresCa.github.io/images/favicon.ico" />
 
@@ -92,39 +90,106 @@
     </div>
 </div>
         <div class="content">
-            <div class="list_with_title">
-                
-                <div class="listing_title">2020</div>
-                <div class="listing">
-                    
-                    <div class="listing_item">
-                        <div class="listing_post">
-                            <a href="/posts/distributed-systems-for-fun-and-profit-part2/">Distributed Systems for Fun and Profit 笔记（二）</a>
-                            <div class="post_time"><span class="date">09-15</span></div>
-                        </div>
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/distributed-systems-for-fun-and-profit-part2/'>Distributed Systems for Fun and Profit 笔记（二）</a></h2>
+                        <span class="date">2020.09.15</span>
                     </div>
-                    
-                    <div class="listing_item">
-                        <div class="listing_post">
-                            <a href="/posts/distributed-systems-for-fun-and-profit-part1/">Distributed Systems for Fun and Profit 笔记 （一）</a>
-                            <div class="post_time"><span class="date">09-11</span></div>
+                    <br>
+                    <aside style="opacity: 0.85; color: darkcyan;">
+                        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#2-抽象的上下不同层次">2. 抽象的上下不同层次</a>
+      <ul>
+        <li><a href="#系统模型">系统模型</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+                    </aside>
+                    <br>
+                    <div class="post_content markdown"><h2 id="2-抽象的上下不同层次">2. 抽象的上下不同层次</h2>
+<h3 id="系统模型">系统模型</h3>
+<p>分布式系统中的程序：</p>
+<ul>
+<li>
+<p>在独立节点上同时运行</p>
+</li>
+<li>
+<p>通过可能引入不确定性和消息丢失的网络连接</p>
+</li>
+<li>
+<p>并且没有共享内存或共享时钟</p>
+</li>
+</ul>
+<p>系统模型列举了与特定系统设计相关的许多假设，实现分布式系统的环境和设施的假设：</p>
+<ul>
+<li>节点具有什么功能以及它们如何失败</li>
+<li>通信连接如何运行以及它们如何可能失败</li>
+<li>整个系统的属性，例如关于时间和顺序的假设</li>
+</ul>
+<p>健壮的系统模型做出最弱假设，强有力的假设创建易于推理的系统模型</p>
+<h4 id="此模型中的节点">此模型中的节点</h4>
+<p>作为计算和存储的主机：</p>
+<ul>
+<li>执行程序的能力</li>
+<li>能够将数据存储到内存和稳定持久状态的能力</li>
+<li>时钟</li>
+</ul>
+<p>节点执行确定性算法</p>
+<p>故障模型：崩溃恢复而非拜占庭容错（任意错误）</p>
+<h4 id="此模型中的通信连接">此模型中的通信连接</h4>
+<p>通信连接将各个节点相互连接，并任一方向发送消息</p>
+<p>网络不可靠，消息易延迟丢失</p>
+<p>网络分区：网络断开但节点存活</p>
+<h4 id="时间和顺序的假设">时间和顺序的假设</h4>
+<p>信息最多以光速传播</p>
+<p>如果距离不同，节点间消息的到达时间、顺序可能不同</p>
+<h5 id="同步系统模型">同步系统模型</h5>
+<p>进程以锁定步骤执行；消息传输延迟有已知上限；每个进程都有准确的时钟</p>
+<h5 id="异步系统模型">异步系统模型</h5>
+<p>没有时间假设，进程以独立的速率执行；消息传输延迟没有限制；有用的时钟不存在</p>
+<h4 id="共识问题">共识问题</h4>
+<p>多个节点都同意一些值时达成共识</p>
+<ol>
+<li>
+<p>一致：每个正确节点都同意相同的值</p>
+</li>
+<li>
+<p>完整：每个正确的进程最多只能决定一个值，如果决定某个值，那么一定是某些进程提议的</p>
+</li>
+<li>
+<p>终止：所有进程最终达成决定</p>
+</li>
+<li>
+<p>有效：如果所有正确进程提议相同的值V，那么所有正确进程决定值V</p>
+</li>
+</ol>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://CeresCa.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">分布式系统</a>
+                                    
+                                </span>
+                            </div>
                         </div>
+                        
                     </div>
-                    
-                    <div class="listing_item">
-                        <div class="listing_post">
-                            <a href="/posts/python-build/">编译  CPython 心得 </a>
-                            <div class="post_time"><span class="date">07-24</span></div>
-                        </div>
-                    </div>
-                    
                 </div>
                 
+                
+                <div class="doc_comments"></div>
+                
             </div>
-            <div class="pagination"></div>
         </div>
-        <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
     </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
     <footer class="footer">
     <div class="powered_by">
         <a href="https://varkai.com">Designed by VarKai,</a>
