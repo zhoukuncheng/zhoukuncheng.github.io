@@ -12,11 +12,11 @@
     
     
     <item>
-      <title>Distributed Systems for Fun and Profit 笔记</title>
-      <link>https://CeresCa.github.io/posts/distributed-systems-for-fun-and-profit-notes/</link>
+      <title>Distributed Systems for Fun and Profit 笔记 （一）</title>
+      <link>https://CeresCa.github.io/posts/distributed-systems-for-fun-and-profit-part1/</link>
       <pubDate>Fri, 11 Sep 2020 01:51:32 +0800</pubDate>
       
-      <guid>https://CeresCa.github.io/posts/distributed-systems-for-fun-and-profit-notes/</guid>
+      <guid>https://CeresCa.github.io/posts/distributed-systems-for-fun-and-profit-part1/</guid>
       <description>0. 前言 &amp;ldquo;Distributed Systems for Fun and Profit&amp;rdquo; 是 mixu 2013 年在 网络上 免费发布的一本介绍分布式系统的小册子。 分布式的两种结果： 信息以光速传播 独立节点独自失败 分布式系统处理距离和多个节点的问题 1. 从高层次角度看分布式系统 计算机的基本任务 存储</description>
     </item>
     
