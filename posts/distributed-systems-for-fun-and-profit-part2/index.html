@@ -76,7 +76,7 @@
             </h1>
         </div>
         <div class="description">
-            <p class="sub_title">一个随性的博客，包括但不限于编程、工作方面</p>
+            <p class="sub_title">个人博客，专注于编程开发</p>
             <div class="my_socials">
                 
                 
@@ -103,6 +103,7 @@
     <li><a href="#2-抽象的上下不同层次">2. 抽象的上下不同层次</a>
       <ul>
         <li><a href="#系统模型">系统模型</a></li>
+        <li><a href="#两种不可能的结果">两种不可能的结果</a></li>
       </ul>
     </li>
   </ul>
@@ -163,9 +164,52 @@
 <p>终止：所有进程最终达成决定</p>
 </li>
 <li>
-<p>有效：如果所有正确进程提议相同的值V，那么所有正确进程决定值V</p>
+<p>有效：如果所有正确进程提议相同的值 V，那么所有正确进程决定值 V</p>
 </li>
 </ol>
+<h3 id="两种不可能的结果">两种不可能的结果</h3>
+<h4 id="flp-不可能">FLP 不可能</h4>
+<p>假定节点只能因崩溃而失效；网络可靠，并且异步系统模型的典型时序假设成立：例如，消息延迟没有限制，</p>
+<p>在网络可靠，但允许节点失效（即便只有一个）的最小化异步模型系统中，不存在一个可以解决一致性问题的确定性共识算法</p>
+<h4 id="cap-定理">CAP 定理</h4>
+<p>三个属性：</p>
+<ul>
+<li>
+<p>（强）一致性：所有节点同时看到相同的数据</p>
+</li>
+<li>
+<p>可用性：节点故障不会阻止幸存者继续运行</p>
+</li>
+<li>
+<p>分区容错：网络或节点故障导致消息丢失时，系统仍可继续运行</p>
+</li>
+</ul>
+<p><img src="/static/CAP.png" alt=""></p>
+<p>同时具备这三种属性的系统无法实现：</p>
+<p>三种不同的系统类型：</p>
+<ul>
+<li>CA（一致性+可用性）：完全严格的仲裁协议，例如两阶段提交</li>
+<li>CP（一致性+分区容错）：多数仲裁协议，其中少数分区不可用，例如Paxos</li>
+<li>AP（可用性+分区容错）：使用冲突解决方案的协议，例如Dynamo</li>
+</ul>
+<p><img src="/static/CAP_choice.png" alt=""></p>
+<p>一致性模型：程序员与系统之间的合同，其中系统保证，如果程序员遵循某些特定规则，则对数据存储区的操作结果将是可预测的</p>
+<ul>
+<li>强一致性模型（能够维护单个副本）
+<ul>
+<li>Linearizable consistency （可线性化一致性）</li>
+<li>Sequential consistency （顺序一致性）</li>
+</ul>
+</li>
+<li>弱一致性
+<ul>
+<li>Client-centric consistency models （客户端为中心一致性）</li>
+<li>Causal consistency: strongest model available （因果一致性）</li>
+<li>Eventual consistency models （最终一致性）</li>
+</ul>
+</li>
+</ul>
+<p>线性化一致性要求操作生效的顺序等于操作的实际实时顺序，顺序一致性允许对操作进行重新排序，只要在每个节点上观察到的顺序保持一致</p>
 </div>
                     <div class="post_footer">
                         
