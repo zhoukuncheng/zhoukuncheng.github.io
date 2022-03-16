@@ -1,56 +1,35 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>GCC on Ceres Cheng 的个人博客</title>
-    <link>https://CeresCa.github.io/tags/gcc/</link>
-    <description>Recent content in GCC on Ceres Cheng 的个人博客</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>zh</language>
-    <lastBuildDate>Fri, 24 Jul 2020 01:11:34 +0800</lastBuildDate><atom:link href="https://CeresCa.github.io/tags/gcc/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>编译  CPython 心得 </title>
-      <link>https://CeresCa.github.io/posts/python-build/</link>
-      <pubDate>Fri, 24 Jul 2020 01:11:34 +0800</pubDate>
-      
-      <guid>https://CeresCa.github.io/posts/python-build/</guid>
-      <description>什么情况下需要自己编译 CPython 大多数操作系统都提供了编译好的 CPython 版本，一般直接通过包管理器安装就能满足需求，但是某些情况下，就需要自己编译 CPython 来满足特定需求了： 操作系统提供的 Python 版本太低，并且 Python 官网、系统包管理源</description>
-      <content>&lt;h2 id=&#34;什么情况下需要自己编译-cpython&#34;&gt;什么情况下需要自己编译 CPython&lt;/h2&gt;
-&lt;p&gt;大多数操作系统都提供了编译好的 CPython 版本，一般直接通过包管理器安装就能满足需求，但是某些情况下，就需要自己编译 CPython 来满足特定需求了：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;操作系统提供的 Python 版本太低，并且 Python 官网、系统包管理源没有提供预编译的新版本 Python&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;预编译版本不符合性能、扩展等方面的要求，比如没有开启编译器优化、OpenSSL/SQLite 版本不满足要求等&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;参与 CPython 开发或者尝鲜，尝试 Alpha/Beta/RC 等版本的 Python&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;​     &lt;br&gt;
-​&lt;/p&gt;
-&lt;h2 id=&#34;低版本-linux-发行版上编译-cpython-时的注意事项&#34;&gt;低版本 Linux 发行版上编译 CPython 时的注意事项&lt;/h2&gt;
-&lt;h3 id=&#34;openssl&#34;&gt;OpenSSL&lt;/h3&gt;
-&lt;p&gt;因为 CentOS 6 官方源中的 OpenSSL 版本过低，不满足 Python 3.7 及之后的要求，所以直接 configure &amp;amp; make 会报错，解决办法：&lt;/p&gt;
-&lt;p&gt;参考 &lt;a href=&#34;https://benad.me/blog/2018/07/17/python-3.7-on-centos-6/&#34;&gt;Python 3.7 on CentOS 6&lt;/a&gt; , 提前编译 OpenSSL,  编译 CPython 时修改  Modules/Setup 文件，并且指定环境变量 &lt;code&gt;LDFLAGS=&amp;quot;-Wl,-rpath=/usr/local/openssl11/lib&amp;quot;&lt;/code&gt; , 指定参数 &lt;code&gt;-with-openssl=/usr/local/openssl11&lt;/code&gt; 。&lt;/p&gt;
-&lt;h3 id=&#34;sqlite&#34;&gt;SQLite&lt;/h3&gt;
-&lt;p&gt;Jupyter 等软件依赖 SQLite,  所以编译 CPython 时不仅要注意 SQLite 版本，也要开启 &lt;code&gt;--enable-loadable-sqlite-extensions&lt;/code&gt; , 参考：&lt;a href=&#34;https://stackoverflow.com/questions/57977481/how-to-use-enable-load-extension-from-sqlite3&#34;&gt;How to use enable_load_extension from sqlite3?&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;​     &lt;br&gt;
-​&lt;/p&gt;
-&lt;h2 id=&#34;影响性能的编译参数&#34;&gt;影响性能的编译参数&lt;/h2&gt;
-&lt;h3 id=&#34;--enable-optimizations&#34;&gt;&amp;ndash;enable-optimizations&lt;/h3&gt;
-&lt;p&gt;根据 StackOverflow 这个问题：&lt;a href=&#34;https://stackoverflow.com/questions/41405728/what-does-enable-optimizations-do-while-compiling-python&#34;&gt;what does &amp;ndash;enable-optimizations do while compiling python?&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;enable-optimizations&lt;/code&gt; 会开启 &lt;code&gt;PGO&lt;/code&gt; 和 &lt;code&gt;LTO&lt;/code&gt; 的编译器优化，PGO会进行两次编译，首次编译后再运行 benchmark 测试，根据测试指导第二次优化编译，&lt;/p&gt;
-&lt;p&gt;优点是会编译出更有效的 CPython 二进制版本，&lt;/p&gt;
-&lt;p&gt;缺点是一是对编译器版本有要求，低版本 GCC PGO 编译时会报错，二是编译时间会大大增加，多了 benchmark 和二次编译的时间，所以 &lt;code&gt;make&lt;/code&gt; 时可以考虑加上 &lt;code&gt; -j&lt;/code&gt; 参数，利用机器多核减少编译时间。&lt;/p&gt;
-&lt;h4 id=&#34;-march&#34;&gt;-march&lt;/h4&gt;
-&lt;p&gt;指定CPU架构也可能影响编译后 CPython 的性能，扩展阅读： &lt;a href=&#34;https://atleastfornow.net/posts/py3-enable-optimisations/&#34;&gt;Compile-time Optimisations on Python 3&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&#34;-fno-semantic-interposition&#34;&gt;-fno-semantic-interposition&lt;/h3&gt;
-&lt;p&gt;参考 &lt;a href=&#34;https://developers.redhat.com/blog/2020/06/25/red-hat-enterprise-linux-8-2-brings-faster-python-3-8-run-speeds/&#34;&gt;Red Hat Enterprise Linux 8.2 brings faster Python 3.8 run speeds&lt;/a&gt; ，&lt;/p&gt;
-&lt;p&gt;GCC 编译时增加 &lt;code&gt;-fno-semantic-interposition&lt;/code&gt; 选项，在 Red Hat / Federa 发行版上，禁用 Semantic interposition ，带来最高 30% 的性能提升。&lt;/p&gt;
-&lt;p&gt;当然，以上编译参数都和特定发行版、编译器版本相关，不能简单认为适用于所有环境，评估性能的最佳方式还是做 benchmark 。&lt;/p&gt;
-</content>
-    </item>
-    
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>GCC on Ceres Cheng 的个人博客</title><link>https://CeresCa.github.io/tags/gcc/</link><description>Recent content in GCC on Ceres Cheng 的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Fri, 24 Jul 2020 01:11:34 +0800</lastBuildDate><atom:link href="https://CeresCa.github.io/tags/gcc/index.xml" rel="self" type="application/rss+xml"/><item><title>编译 CPython 心得</title><link>https://CeresCa.github.io/posts/python-build/</link><pubDate>Fri, 24 Jul 2020 01:11:34 +0800</pubDate><guid>https://CeresCa.github.io/posts/python-build/</guid><description>什么情况下需要自己编译 CPython 大多数操作系统都提供了编译好的 CPython 版本，一般直接通过包管理器安装就能满足需求，但是某些情况下，就需要自己编译 CPython 来满足特定需求了： 操作系统提供的 Python 版本太低，并且 Python 官网、系统包管理源</description><content>&lt;h2 id="什么情况下需要自己编译-cpython">什么情况下需要自己编译 CPython&lt;/h2>
+&lt;p>大多数操作系统都提供了编译好的 CPython 版本，一般直接通过包管理器安装就能满足需求，但是某些情况下，就需要自己编译 CPython 来满足特定需求了：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>操作系统提供的 Python 版本太低，并且 Python 官网、系统包管理源没有提供预编译的新版本 Python&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>预编译版本不符合性能、扩展等方面的要求，比如没有开启编译器优化、OpenSSL/SQLite 版本不满足要求等&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>参与 CPython 开发或者尝鲜，尝试 Alpha/Beta/RC 等版本的 Python&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>​ &lt;br>
+​&lt;/p>
+&lt;h2 id="低版本-linux-发行版上编译-cpython-时的注意事项">低版本 Linux 发行版上编译 CPython 时的注意事项&lt;/h2>
+&lt;h3 id="openssl">OpenSSL&lt;/h3>
+&lt;p>因为 CentOS 6 官方源中的 OpenSSL 版本过低，不满足 Python 3.7 及之后的要求，所以直接 configure &amp;amp; make 会报错，解决办法：&lt;/p>
+&lt;p>参考 &lt;a href="https://benad.me/blog/2018/07/17/python-3.7-on-centos-6/">Python 3.7 on CentOS 6&lt;/a> , 提前编译 OpenSSL, 编译 CPython 时修改 Modules/Setup 文件，并且指定环境变量 &lt;code>LDFLAGS=&amp;quot;-Wl,-rpath=/usr/local/openssl11/lib&amp;quot;&lt;/code> , 指定参数 &lt;code>-with-openssl=/usr/local/openssl11&lt;/code> 。&lt;/p>
+&lt;h3 id="sqlite">SQLite&lt;/h3>
+&lt;p>Jupyter 等软件依赖 SQLite, 所以编译 CPython 时不仅要注意 SQLite 版本，也要开启 &lt;code>--enable-loadable-sqlite-extensions&lt;/code> , 参考：&lt;a href="https://stackoverflow.com/questions/57977481/how-to-use-enable-load-extension-from-sqlite3">How to use enable_load_extension from sqlite3?&lt;/a>&lt;/p>
+&lt;p>​ &lt;br>
+​&lt;/p>
+&lt;h2 id="影响性能的编译参数">影响性能的编译参数&lt;/h2>
+&lt;h3 id="--enable-optimizations">&amp;ndash;enable-optimizations&lt;/h3>
+&lt;p>根据 StackOverflow 这个问题：&lt;a href="https://stackoverflow.com/questions/41405728/what-does-enable-optimizations-do-while-compiling-python">what does &amp;ndash;enable-optimizations do while compiling python?&lt;/a>&lt;/p>
+&lt;p>&lt;code>enable-optimizations&lt;/code> 会开启 &lt;code>PGO&lt;/code> 和 &lt;code>LTO&lt;/code> 的编译器优化，PGO会进行两次编译，首次编译后再运行 benchmark 测试，根据测试指导第二次优化编译，&lt;/p>
+&lt;p>优点是会编译出更有效的 CPython 二进制版本，&lt;/p>
+&lt;p>缺点是一是对编译器版本有要求，低版本 GCC PGO 编译时会报错，二是编译时间会大大增加，多了 benchmark 和二次编译的时间，所以 &lt;code>make&lt;/code> 时可以考虑加上 &lt;code> -j&lt;/code> 参数，利用机器多核减少编译时间。&lt;/p>
+&lt;h4 id="-march">-march&lt;/h4>
+&lt;p>指定CPU架构也可能影响编译后 CPython 的性能，扩展阅读： &lt;a href="https://atleastfornow.net/posts/py3-enable-optimisations/">Compile-time Optimisations on Python 3&lt;/a>&lt;/p>
+&lt;h3 id="-fno-semantic-interposition">-fno-semantic-interposition&lt;/h3>
+&lt;p>参考 &lt;a href="https://developers.redhat.com/blog/2020/06/25/red-hat-enterprise-linux-8-2-brings-faster-python-3-8-run-speeds/">Red Hat Enterprise Linux 8.2 brings faster Python 3.8 run speeds&lt;/a> ，&lt;/p>
+&lt;p>GCC 编译时增加 &lt;code>-fno-semantic-interposition&lt;/code> 选项，在 Red Hat / Federa 发行版上，禁用 Semantic interposition ，带来最高 30% 的性能提升。&lt;/p>
+&lt;p>当然，以上编译参数都和特定发行版、编译器版本相关，不能简单认为适用于所有环境，评估性能的最佳方式还是做 benchmark 。&lt;/p></content></item></channel></rss>

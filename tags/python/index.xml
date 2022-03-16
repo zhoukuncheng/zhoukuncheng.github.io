@@ -1,152 +1,120 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Python on Ceres Cheng 的个人博客</title>
-    <link>https://CeresCa.github.io/tags/python/</link>
-    <description>Recent content in Python on Ceres Cheng 的个人博客</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>zh</language>
-    <lastBuildDate>Mon, 30 Aug 2021 23:54:05 +0800</lastBuildDate><atom:link href="https://CeresCa.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Python与Go之间的并发模式差异</title>
-      <link>https://CeresCa.github.io/posts/concurrency-model-differences-between-python-go/</link>
-      <pubDate>Mon, 30 Aug 2021 23:54:05 +0800</pubDate>
-      
-      <guid>https://CeresCa.github.io/posts/concurrency-model-differences-between-python-go/</guid>
-      <description>Python并发方式 在 Python 中，早期并发方式以传统的多进程和多线程为主，类似 Java，同时，有不少第三方的异步方案（gevent/tornado/twisted 等）。 在 Python 3 时期，官方推出了 asyncio 和 async await 语法，作</description>
-      <content>&lt;h2 id=&#34;python并发方式&#34;&gt;Python并发方式&lt;/h2&gt;
-&lt;p&gt;在 Python 中，早期并发方式以传统的多进程和多线程为主，类似 Java，同时，有不少第三方的异步方案（gevent/tornado/twisted 等）。&lt;br&gt;
-在 Python 3 时期，官方推出了 asyncio 和 async await 语法，作为 Python 官方的协程实现，而逐渐普及。&lt;/p&gt;
-&lt;h3 id=&#34;进程&#34;&gt;进程&lt;/h3&gt;
-&lt;p&gt;多进程编程示例：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;multiprocessing&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Process&lt;/span&gt;
-
-&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;hello&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;vm&#34;&gt;__name__&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Process&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;target&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;bob&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,))&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;start&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;multiprocessing 与 threading 的 API 接近，比较容易创建多进程的程序，是 Python 官方推荐作为绕过多线程 GIL 限制的一种方案。&lt;br&gt;
-但需要注意，创建进程的参数需要能被 pickle 序列化，最好使用 Pipe、Queue 等进程安全的数据结构（&lt;a href=&#34;https://docs.python.org/3/library/multiprocessing.html#programming-guidelines&#34;&gt;官方文档的 Programming guidelines&lt;/a&gt;）&lt;/p&gt;
-&lt;h3 id=&#34;线程&#34;&gt;线程&lt;/h3&gt;
-&lt;p&gt;多线程代码示例：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;threading&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Thread&lt;/span&gt;
-
-&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;hello&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;vm&#34;&gt;__name__&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Thread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;target&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;bob&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,))&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;start&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 线程池方式&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;with&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ThreadPoolExecutor&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;max_workers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;executor&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;future&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;executor&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;submit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;pow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;323&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1235&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Cpython 线程的缺陷：GIL（全局解释器锁）&lt;br&gt;
-GIL 是 Cpython 执行 Python 字节码时的一把全局锁，导致解释器在 CPU 密集型任务时不能充分利用多核，而 IO 密集型任务会释放 GIL。 &lt;br&gt;
-如果想绕过 GIL，只能换成多进程方式，或者通过C 扩展绕过。&lt;/p&gt;
-&lt;h3 id=&#34;协程&#34;&gt;协程&lt;/h3&gt;
-&lt;p&gt;asyncio示例：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;asyncio&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;time&lt;/span&gt;
-
-&lt;span class=&#34;n&#34;&gt;async&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;say_after&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;delay&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;what&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;await&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;asyncio&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sleep&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;delay&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;what&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-&lt;span class=&#34;n&#34;&gt;async&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;started at {time.strftime(&amp;#39;&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;%X&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#39;)}&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;await&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;asyncio&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;gather&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;say_after&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;hello&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;say_after&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;world&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;finished at {time.strftime(&amp;#39;&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;%X&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#39;)}&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-&lt;span class=&#34;n&#34;&gt;asyncio&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
-&lt;span class=&#34;c1&#34;&gt;# started at 22:32:23&lt;/span&gt;
-&lt;span class=&#34;c1&#34;&gt;# hello&lt;/span&gt;
-&lt;span class=&#34;c1&#34;&gt;# world&lt;/span&gt;
-&lt;span class=&#34;c1&#34;&gt;# finished at 22:32:25&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;async-语法-与-asyncio&#34;&gt;async 语法 与 asyncio&lt;/h4&gt;
-&lt;p&gt;Python 从 3.4 版本开始，标准库自带 asyncio 模块，并从 3.5 开始，支持 async/await 语法。&lt;br&gt;
-Python 协程的实现可以追溯到 Python 2 时期引入的 yield 关键字和生成器这种特殊结构：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;生成器通过 yield 暂停，并且可以返回值&lt;/li&gt;
-&lt;li&gt;调用方通过 next() 或者 send() 方法恢复生成器的运行，并且可以通过 send() 发送数据给生成器&lt;/li&gt;
-&lt;li&gt;yield from 语法糖可以方便的迭代生成器中每一个值&lt;/li&gt;
-&lt;li&gt;通过引入 async/await 语法，正式确立协程类型&lt;/li&gt;
-&lt;li&gt;asyncio 库提供了官方的事件循环实现，并且支持不同操作系统的 io 多路复用（select/epoll/iocp 等），或者可以通过配置替换为第三方实现（如 uvloop）&lt;/li&gt;
-&lt;li&gt;借助 concurrent.futures 线程池/进程池 模块，支持多线程/多进程，但事件循环本身依旧是单线程模式&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;go-并发方式&#34;&gt;Go 并发方式&lt;/h2&gt;
-&lt;p&gt;goroutine 与 channel 示例：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;
-
-&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-   &lt;span class=&#34;nx&#34;&gt;messages&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;chan&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-   &lt;span class=&#34;k&#34;&gt;go&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;messages&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;ping&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}()&lt;/span&gt;
-   &lt;span class=&#34;nx&#34;&gt;msg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;messages&lt;/span&gt;
-   &lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;msg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;goroutine-与-channel&#34;&gt;goroutine 与 channel&lt;/h4&gt;
-&lt;p&gt;Golang 实现了用户态的协程 goroutine，通过&lt;a href=&#34;https://golang.org/src/runtime/runtime2.go&#34;&gt;GPM模型&lt;/a&gt;来进行协程的调度，
-&lt;img src=&#34;https://miro.medium.com/max/1302/1*2o9fS2rEJltFYom65wAIyw.jpeg&#34; alt=&#34;&#34;&gt;&lt;br&gt;
-并且通过 netpoller 来支持网络的IO多路复用；&lt;br&gt;
-通过 channel 在不同 goroutine 中进行通信。&lt;/p&gt;
-&lt;h5 id=&#34;csp&#34;&gt;CSP&lt;/h5&gt;
-&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Communicating_sequential_processes&#34;&gt;CSP（通信顺序进程）&lt;/a&gt;是一种并发的模型，通过消息传递来进行交互，而不是通过共享变量。&lt;/p&gt;
-&lt;h2 id=&#34;对比&#34;&gt;对比&lt;/h2&gt;
-&lt;h3 id=&#34;有栈协程与无栈协程&#34;&gt;有栈协程与无栈协程&lt;/h3&gt;
-&lt;h3 id=&#34;单线程与多线程&#34;&gt;单线程与多线程&lt;/h3&gt;
-</content>
-    </item>
-    
-    <item>
-      <title>编译  CPython 心得 </title>
-      <link>https://CeresCa.github.io/posts/python-build/</link>
-      <pubDate>Fri, 24 Jul 2020 01:11:34 +0800</pubDate>
-      
-      <guid>https://CeresCa.github.io/posts/python-build/</guid>
-      <description>什么情况下需要自己编译 CPython 大多数操作系统都提供了编译好的 CPython 版本，一般直接通过包管理器安装就能满足需求，但是某些情况下，就需要自己编译 CPython 来满足特定需求了： 操作系统提供的 Python 版本太低，并且 Python 官网、系统包管理源</description>
-      <content>&lt;h2 id=&#34;什么情况下需要自己编译-cpython&#34;&gt;什么情况下需要自己编译 CPython&lt;/h2&gt;
-&lt;p&gt;大多数操作系统都提供了编译好的 CPython 版本，一般直接通过包管理器安装就能满足需求，但是某些情况下，就需要自己编译 CPython 来满足特定需求了：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;操作系统提供的 Python 版本太低，并且 Python 官网、系统包管理源没有提供预编译的新版本 Python&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;预编译版本不符合性能、扩展等方面的要求，比如没有开启编译器优化、OpenSSL/SQLite 版本不满足要求等&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;参与 CPython 开发或者尝鲜，尝试 Alpha/Beta/RC 等版本的 Python&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;​     &lt;br&gt;
-​&lt;/p&gt;
-&lt;h2 id=&#34;低版本-linux-发行版上编译-cpython-时的注意事项&#34;&gt;低版本 Linux 发行版上编译 CPython 时的注意事项&lt;/h2&gt;
-&lt;h3 id=&#34;openssl&#34;&gt;OpenSSL&lt;/h3&gt;
-&lt;p&gt;因为 CentOS 6 官方源中的 OpenSSL 版本过低，不满足 Python 3.7 及之后的要求，所以直接 configure &amp;amp; make 会报错，解决办法：&lt;/p&gt;
-&lt;p&gt;参考 &lt;a href=&#34;https://benad.me/blog/2018/07/17/python-3.7-on-centos-6/&#34;&gt;Python 3.7 on CentOS 6&lt;/a&gt; , 提前编译 OpenSSL,  编译 CPython 时修改  Modules/Setup 文件，并且指定环境变量 &lt;code&gt;LDFLAGS=&amp;quot;-Wl,-rpath=/usr/local/openssl11/lib&amp;quot;&lt;/code&gt; , 指定参数 &lt;code&gt;-with-openssl=/usr/local/openssl11&lt;/code&gt; 。&lt;/p&gt;
-&lt;h3 id=&#34;sqlite&#34;&gt;SQLite&lt;/h3&gt;
-&lt;p&gt;Jupyter 等软件依赖 SQLite,  所以编译 CPython 时不仅要注意 SQLite 版本，也要开启 &lt;code&gt;--enable-loadable-sqlite-extensions&lt;/code&gt; , 参考：&lt;a href=&#34;https://stackoverflow.com/questions/57977481/how-to-use-enable-load-extension-from-sqlite3&#34;&gt;How to use enable_load_extension from sqlite3?&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;​     &lt;br&gt;
-​&lt;/p&gt;
-&lt;h2 id=&#34;影响性能的编译参数&#34;&gt;影响性能的编译参数&lt;/h2&gt;
-&lt;h3 id=&#34;--enable-optimizations&#34;&gt;&amp;ndash;enable-optimizations&lt;/h3&gt;
-&lt;p&gt;根据 StackOverflow 这个问题：&lt;a href=&#34;https://stackoverflow.com/questions/41405728/what-does-enable-optimizations-do-while-compiling-python&#34;&gt;what does &amp;ndash;enable-optimizations do while compiling python?&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;enable-optimizations&lt;/code&gt; 会开启 &lt;code&gt;PGO&lt;/code&gt; 和 &lt;code&gt;LTO&lt;/code&gt; 的编译器优化，PGO会进行两次编译，首次编译后再运行 benchmark 测试，根据测试指导第二次优化编译，&lt;/p&gt;
-&lt;p&gt;优点是会编译出更有效的 CPython 二进制版本，&lt;/p&gt;
-&lt;p&gt;缺点是一是对编译器版本有要求，低版本 GCC PGO 编译时会报错，二是编译时间会大大增加，多了 benchmark 和二次编译的时间，所以 &lt;code&gt;make&lt;/code&gt; 时可以考虑加上 &lt;code&gt; -j&lt;/code&gt; 参数，利用机器多核减少编译时间。&lt;/p&gt;
-&lt;h4 id=&#34;-march&#34;&gt;-march&lt;/h4&gt;
-&lt;p&gt;指定CPU架构也可能影响编译后 CPython 的性能，扩展阅读： &lt;a href=&#34;https://atleastfornow.net/posts/py3-enable-optimisations/&#34;&gt;Compile-time Optimisations on Python 3&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&#34;-fno-semantic-interposition&#34;&gt;-fno-semantic-interposition&lt;/h3&gt;
-&lt;p&gt;参考 &lt;a href=&#34;https://developers.redhat.com/blog/2020/06/25/red-hat-enterprise-linux-8-2-brings-faster-python-3-8-run-speeds/&#34;&gt;Red Hat Enterprise Linux 8.2 brings faster Python 3.8 run speeds&lt;/a&gt; ，&lt;/p&gt;
-&lt;p&gt;GCC 编译时增加 &lt;code&gt;-fno-semantic-interposition&lt;/code&gt; 选项，在 Red Hat / Federa 发行版上，禁用 Semantic interposition ，带来最高 30% 的性能提升。&lt;/p&gt;
-&lt;p&gt;当然，以上编译参数都和特定发行版、编译器版本相关，不能简单认为适用于所有环境，评估性能的最佳方式还是做 benchmark 。&lt;/p&gt;
-</content>
-    </item>
-    
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Python on Ceres Cheng 的个人博客</title><link>https://CeresCa.github.io/tags/python/</link><description>Recent content in Python on Ceres Cheng 的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Mon, 30 Aug 2021 23:54:05 +0800</lastBuildDate><atom:link href="https://CeresCa.github.io/tags/python/index.xml" rel="self" type="application/rss+xml"/><item><title>Python与Go之间的并发模式差异</title><link>https://CeresCa.github.io/posts/concurrency-model-differences-between-python-go/</link><pubDate>Mon, 30 Aug 2021 23:54:05 +0800</pubDate><guid>https://CeresCa.github.io/posts/concurrency-model-differences-between-python-go/</guid><description>Python并发方式 在 Python 中，早期并发方式以传统的多进程和多线程为主，类似 Java，同时，有不少第三方的异步方案（gevent/tornado/twisted 等）。 在 Python 3 时期，官方推出了 asyncio 和 async await 语法，作</description><content>&lt;h2 id="python并发方式">Python并发方式&lt;/h2>
+&lt;p>在 Python 中，早期并发方式以传统的多进程和多线程为主，类似 Java，同时，有不少第三方的异步方案（gevent/tornado/twisted 等）。&lt;br>
+在 Python 3 时期，官方推出了 asyncio 和 async await 语法，作为 Python 官方的协程实现，而逐渐普及。&lt;/p>
+&lt;h3 id="进程">进程&lt;/h3>
+&lt;p>多进程编程示例：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">multiprocessing&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">Process&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">f&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">name&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;hello&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="vm">__name__&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s1">&amp;#39;__main__&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Process&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">target&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">args&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;bob&amp;#39;&lt;/span>&lt;span class="p">,))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">p&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">start&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">p&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">join&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>multiprocessing 与 threading 的 API 接近，比较容易创建多进程的程序，是 Python 官方推荐作为绕过多线程 GIL 限制的一种方案。&lt;br>
+但需要注意，创建进程的参数需要能被 pickle 序列化，最好使用 Pipe、Queue 等进程安全的数据结构（&lt;a href="https://docs.python.org/3/library/multiprocessing.html#programming-guidelines">官方文档的 Programming guidelines&lt;/a>）&lt;/p>
+&lt;h3 id="线程">线程&lt;/h3>
+&lt;p>多线程代码示例：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">threading&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">Thread&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">f&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">name&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;hello&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="vm">__name__&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s1">&amp;#39;__main__&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Thread&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">target&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">args&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;bob&amp;#39;&lt;/span>&lt;span class="p">,))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">p&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">start&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">p&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">join&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 线程池方式&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">with&lt;/span> &lt;span class="n">ThreadPoolExecutor&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">max_workers&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="n">executor&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">future&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">executor&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">submit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">pow&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">323&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1235&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">future&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">result&lt;/span>&lt;span class="p">())&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Cpython 线程的缺陷：GIL（全局解释器锁）&lt;br>
+GIL 是 Cpython 执行 Python 字节码时的一把全局锁，导致解释器在 CPU 密集型任务时不能充分利用多核，而 IO 密集型任务会释放 GIL。 &lt;br>
+如果想绕过 GIL，只能换成多进程方式，或者通过C 扩展绕过。&lt;/p>
+&lt;h3 id="协程">协程&lt;/h3>
+&lt;p>asyncio示例：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">asyncio&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">time&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">async&lt;/span> &lt;span class="k">def&lt;/span> &lt;span class="nf">say_after&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">delay&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">what&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">await&lt;/span> &lt;span class="n">asyncio&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sleep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">delay&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">what&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">async&lt;/span> &lt;span class="k">def&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;started at &lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">time&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">strftime&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span>&lt;span class="si">%X&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">await&lt;/span> &lt;span class="n">asyncio&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gather&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">say_after&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;hello&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">say_after&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="s1">&amp;#39;world&amp;#39;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;finished at &lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">time&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">strftime&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span>&lt;span class="si">%X&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">asyncio&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">main&lt;/span>&lt;span class="p">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># started at 22:32:23&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># hello&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># world&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># finished at 22:32:25&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="async-语法-与-asyncio">async 语法 与 asyncio&lt;/h4>
+&lt;p>Python 从 3.4 版本开始，标准库自带 asyncio 模块，并从 3.5 开始，支持 async/await 语法。&lt;br>
+Python 协程的实现可以追溯到 Python 2 时期引入的 yield 关键字和生成器这种特殊结构：&lt;/p>
+&lt;ul>
+&lt;li>生成器通过 yield 暂停，并且可以返回值&lt;/li>
+&lt;li>调用方通过 next() 或者 send() 方法恢复生成器的运行，并且可以通过 send() 发送数据给生成器&lt;/li>
+&lt;li>yield from 语法糖可以方便的迭代生成器中每一个值&lt;/li>
+&lt;li>通过引入 async/await 语法，正式确立协程类型&lt;/li>
+&lt;li>asyncio 库提供了官方的事件循环实现，并且支持不同操作系统的 io 多路复用（select/epoll/iocp 等），或者可以通过配置替换为第三方实现（如 uvloop）&lt;/li>
+&lt;li>借助 concurrent.futures 线程池/进程池 模块，支持多线程/多进程，但事件循环本身依旧是单线程模式&lt;/li>
+&lt;/ul>
+&lt;h2 id="go-并发方式">Go 并发方式&lt;/h2>
+&lt;p>goroutine 与 channel 示例：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">messages&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">go&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">messages&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span> &lt;span class="s">&amp;#34;ping&amp;#34;&lt;/span> &lt;span class="p">}()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">msg&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">messages&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="goroutine-与-channel">goroutine 与 channel&lt;/h4>
+&lt;p>Golang 实现了用户态的协程 goroutine，通过&lt;a href="https://golang.org/src/runtime/runtime2.go">GPM模型&lt;/a>来进行协程的调度，
+&lt;img src="https://miro.medium.com/max/1302/1*2o9fS2rEJltFYom65wAIyw.jpeg" alt="">&lt;br>
+并且通过 netpoller 来支持网络的IO多路复用；&lt;br>
+通过 channel 在不同 goroutine 中进行通信。&lt;/p>
+&lt;h5 id="csp">CSP&lt;/h5>
+&lt;p>&lt;a href="https://en.wikipedia.org/wiki/Communicating_sequential_processes">CSP（通信顺序进程）&lt;/a>是一种并发的模型，通过消息传递来进行交互，而不是通过共享变量。&lt;/p>
+&lt;h2 id="对比">对比&lt;/h2>
+&lt;h3 id="有栈协程与无栈协程">有栈协程与无栈协程&lt;/h3>
+&lt;h3 id="单线程与多线程">单线程与多线程&lt;/h3></content></item><item><title>编译 CPython 心得</title><link>https://CeresCa.github.io/posts/python-build/</link><pubDate>Fri, 24 Jul 2020 01:11:34 +0800</pubDate><guid>https://CeresCa.github.io/posts/python-build/</guid><description>什么情况下需要自己编译 CPython 大多数操作系统都提供了编译好的 CPython 版本，一般直接通过包管理器安装就能满足需求，但是某些情况下，就需要自己编译 CPython 来满足特定需求了： 操作系统提供的 Python 版本太低，并且 Python 官网、系统包管理源</description><content>&lt;h2 id="什么情况下需要自己编译-cpython">什么情况下需要自己编译 CPython&lt;/h2>
+&lt;p>大多数操作系统都提供了编译好的 CPython 版本，一般直接通过包管理器安装就能满足需求，但是某些情况下，就需要自己编译 CPython 来满足特定需求了：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>操作系统提供的 Python 版本太低，并且 Python 官网、系统包管理源没有提供预编译的新版本 Python&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>预编译版本不符合性能、扩展等方面的要求，比如没有开启编译器优化、OpenSSL/SQLite 版本不满足要求等&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>参与 CPython 开发或者尝鲜，尝试 Alpha/Beta/RC 等版本的 Python&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>​ &lt;br>
+​&lt;/p>
+&lt;h2 id="低版本-linux-发行版上编译-cpython-时的注意事项">低版本 Linux 发行版上编译 CPython 时的注意事项&lt;/h2>
+&lt;h3 id="openssl">OpenSSL&lt;/h3>
+&lt;p>因为 CentOS 6 官方源中的 OpenSSL 版本过低，不满足 Python 3.7 及之后的要求，所以直接 configure &amp;amp; make 会报错，解决办法：&lt;/p>
+&lt;p>参考 &lt;a href="https://benad.me/blog/2018/07/17/python-3.7-on-centos-6/">Python 3.7 on CentOS 6&lt;/a> , 提前编译 OpenSSL, 编译 CPython 时修改 Modules/Setup 文件，并且指定环境变量 &lt;code>LDFLAGS=&amp;quot;-Wl,-rpath=/usr/local/openssl11/lib&amp;quot;&lt;/code> , 指定参数 &lt;code>-with-openssl=/usr/local/openssl11&lt;/code> 。&lt;/p>
+&lt;h3 id="sqlite">SQLite&lt;/h3>
+&lt;p>Jupyter 等软件依赖 SQLite, 所以编译 CPython 时不仅要注意 SQLite 版本，也要开启 &lt;code>--enable-loadable-sqlite-extensions&lt;/code> , 参考：&lt;a href="https://stackoverflow.com/questions/57977481/how-to-use-enable-load-extension-from-sqlite3">How to use enable_load_extension from sqlite3?&lt;/a>&lt;/p>
+&lt;p>​ &lt;br>
+​&lt;/p>
+&lt;h2 id="影响性能的编译参数">影响性能的编译参数&lt;/h2>
+&lt;h3 id="--enable-optimizations">&amp;ndash;enable-optimizations&lt;/h3>
+&lt;p>根据 StackOverflow 这个问题：&lt;a href="https://stackoverflow.com/questions/41405728/what-does-enable-optimizations-do-while-compiling-python">what does &amp;ndash;enable-optimizations do while compiling python?&lt;/a>&lt;/p>
+&lt;p>&lt;code>enable-optimizations&lt;/code> 会开启 &lt;code>PGO&lt;/code> 和 &lt;code>LTO&lt;/code> 的编译器优化，PGO会进行两次编译，首次编译后再运行 benchmark 测试，根据测试指导第二次优化编译，&lt;/p>
+&lt;p>优点是会编译出更有效的 CPython 二进制版本，&lt;/p>
+&lt;p>缺点是一是对编译器版本有要求，低版本 GCC PGO 编译时会报错，二是编译时间会大大增加，多了 benchmark 和二次编译的时间，所以 &lt;code>make&lt;/code> 时可以考虑加上 &lt;code> -j&lt;/code> 参数，利用机器多核减少编译时间。&lt;/p>
+&lt;h4 id="-march">-march&lt;/h4>
+&lt;p>指定CPU架构也可能影响编译后 CPython 的性能，扩展阅读： &lt;a href="https://atleastfornow.net/posts/py3-enable-optimisations/">Compile-time Optimisations on Python 3&lt;/a>&lt;/p>
+&lt;h3 id="-fno-semantic-interposition">-fno-semantic-interposition&lt;/h3>
+&lt;p>参考 &lt;a href="https://developers.redhat.com/blog/2020/06/25/red-hat-enterprise-linux-8-2-brings-faster-python-3-8-run-speeds/">Red Hat Enterprise Linux 8.2 brings faster Python 3.8 run speeds&lt;/a> ，&lt;/p>
+&lt;p>GCC 编译时增加 &lt;code>-fno-semantic-interposition&lt;/code> 选项，在 Red Hat / Federa 发行版上，禁用 Semantic interposition ，带来最高 30% 的性能提升。&lt;/p>
+&lt;p>当然，以上编译参数都和特定发行版、编译器版本相关，不能简单认为适用于所有环境，评估性能的最佳方式还是做 benchmark 。&lt;/p></content></item></channel></rss>
