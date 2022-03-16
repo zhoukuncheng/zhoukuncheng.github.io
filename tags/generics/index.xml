@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Generics on Ceres Cheng 的个人博客</title><link>https://CeresCa.github.io/tags/generics/</link><description>Recent content in Generics on Ceres Cheng 的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 16 Mar 2022 22:41:56 +0800</lastBuildDate><atom:link href="https://CeresCa.github.io/tags/generics/index.xml" rel="self" type="application/rss+xml"/><item><title>Go 1.18 泛型介绍</title><link>https://CeresCa.github.io/posts/go-generics/</link><pubDate>Wed, 16 Mar 2022 22:41:56 +0800</pubDate><guid>https://CeresCa.github.io/posts/go-generics/</guid><description>什么是泛型 泛型程序设计（generic programming）是程序设计语言的一种风格或范式。泛型允许程序员在编写代码时使用一些以后才指定的类型，在实例化时作为参数指明这些类型。 Golang 泛型基本用法 示例 map 操</description><content>&lt;h2 id="什么是泛型">什么是泛型&lt;/h2>
+&lt;p>泛型程序设计（generic programming）是程序设计语言的一种风格或范式。泛型允许程序员在编写代码时使用一些以后才指定的类型，在实例化时作为参数指明这些类型。&lt;/p>
+&lt;h2 id="golang-泛型基本用法">Golang 泛型基本用法&lt;/h2>
+&lt;h3 id="示例">示例&lt;/h3>
+&lt;p>map 操作&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-golang" data-lang="golang">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nx">mapFunc&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span> &lt;span class="nx">any&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">M&lt;/span> &lt;span class="nx">any&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">f&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nx">M&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nx">M&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">n&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">([]&lt;/span>&lt;span class="nx">M&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nb">cap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">e&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">a&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">n&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nf">f&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">e&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">n&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">vi&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">6&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">vs&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">mapFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">vi&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">v&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="s">&amp;#34;&amp;lt;&amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Sprint&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">v&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="nx">v&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;&amp;gt;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">vs&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>min max 函数&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-golang" data-lang="golang">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">ordered&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">~&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">int8&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">int16&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">int32&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">int64&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">uint&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">uint8&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">uint16&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">uint32&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">uint64&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">uintptr&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">float32&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">float64&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">~&lt;/span>&lt;span class="kt">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nx">max&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span> &lt;span class="nx">ordered&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nx">T&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">m&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">v&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">a&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">m&lt;/span> &lt;span class="p">&amp;lt;&lt;/span> &lt;span class="nx">v&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">m&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">v&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">m&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nx">min&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span> &lt;span class="nx">ordered&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nx">T&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">m&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">v&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">a&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">m&lt;/span> &lt;span class="p">&amp;gt;&lt;/span> &lt;span class="nx">v&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">m&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">v&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">m&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">vi&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">6&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">7&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">result&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">max&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">vi&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">result&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">vii&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;a&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;b&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;d&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;e&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;f&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;g&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;h&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;i&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;j&amp;#34;&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">result2&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">min&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">vii&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">result2&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Set&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-golang" data-lang="golang">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Package sets implements sets of any comparable type.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nx">sets&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Set is a set of values.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">type&lt;/span> &lt;span class="nx">Set&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span> &lt;span class="nx">comparable&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="kd">struct&lt;/span>&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Make returns a set of some element type.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nx">Make&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span> &lt;span class="nx">comparable&lt;/span>&lt;span class="p">]()&lt;/span> &lt;span class="nx">Set&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">Set&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Add adds v to the set s.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// If v is already in s this has no effect.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="nx">Set&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="nf">Add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">v&lt;/span> &lt;span class="nx">T&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">v&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{}{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Delete removes v from the set s.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// If v is not in s this has no effect.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="nx">Set&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="nf">Delete&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">v&lt;/span> &lt;span class="nx">T&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">delete&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">v&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Contains reports whether v is in s.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="nx">Set&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="nf">Contains&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">v&lt;/span> &lt;span class="nx">T&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">bool&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ok&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">s&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">v&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">ok&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Len reports the number of elements in s.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="nx">Set&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="nf">Len&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Iterate invokes f on each element of s.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// It&amp;#39;s OK for f to call the Delete method.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="nx">Set&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="nf">Iterate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">f&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">T&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">v&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">s&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">f&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">v&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="尝鲜试用">尝鲜试用&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>Go2Goplaygroud： &lt;a href="https://go2goplay.golang.org/">The go2go Playground&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Go 1.17 （非最新，不推荐）：&lt;/p>
+&lt;p>&lt;code>go run -gcflags=-G=3 myproject``/main``.go&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>go 1.18 （正式版已发布）&lt;/p>
+&lt;p>&lt;a href="https://go.dev/doc/go1.18">https://go.dev/doc/go1.18&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="golang-类型当前状况与泛型的意义">Golang 类型当前状况与泛型的意义&lt;/h2>
+&lt;h3 id="当前">当前&lt;/h3>
+&lt;h4 id="interface">interface&lt;/h4>
+&lt;p>弊端：类型转换、缺乏编译时的约束&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-golang" data-lang="golang">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">printStr&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">x&lt;/span> &lt;span class="kd">interface&lt;/span>&lt;span class="p">{})&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">value&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ok&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">x&lt;/span>&lt;span class="p">.(&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">!&lt;/span>&lt;span class="nx">ok&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;It&amp;#39;s not ok for type string&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;The value is &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">value&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printStr&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">123&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// It&amp;#39;s not ok for type string
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="为不同类型单独编写">为不同类型单独编写&lt;/h4>
+&lt;p>弊端：API与代码实现不整洁、工作量大等&lt;/p>
+&lt;p>示例：当前标准库的 sort, math 等&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://pkg.go.dev/sort">https://pkg.go.dev/sort&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://pkg.go.dev/math">https://pkg.go.dev/math&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h4 id="代码生成">代码生成&lt;/h4>
+&lt;p>弊端：需学习第三方代码生成工具、go:generate、AST等知识，不通用&lt;/p>
+&lt;p>示例：&lt;/p>
+&lt;p>&lt;a href="https://github.com/cheekybits/genny">https://github.com/cheekybits/genny&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-golang" data-lang="golang">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">gogenerate&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="s">&amp;#34;github.com/cheekybits/genny/generic&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//go:generate genny -in=$GOFILE -out=gen-$GOFILE gen &amp;#34;KeyType=string,int ValueType=string,int&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">KeyType&lt;/span> &lt;span class="nx">generic&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Type&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">ValueType&lt;/span> &lt;span class="nx">generic&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Type&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">KeyTypeValueTypeMap&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">KeyType&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="nx">ValueType&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">NewKeyTypeValueTypeMap&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">KeyType&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="nx">ValueType&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">KeyType&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="nx">ValueType&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="go-官方泛型意义">Go 官方泛型意义&lt;/h3>
+&lt;ul>
+&lt;li>通用操作与类型约束&lt;/li>
+&lt;li>函数式编程&lt;/li>
+&lt;li>简化标准库和第三方库的实现&lt;/li>
+&lt;/ul>
+&lt;p>………&lt;/p>
+&lt;h2 id="golang-泛型发展历史">Golang 泛型发展历史&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">简述&lt;/th>
+&lt;th style="text-align:left">时间&lt;/th>
+&lt;th style="text-align:left">作者&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">[Type Functions]&lt;/td>
+&lt;td style="text-align:left">2010 年&lt;/td>
+&lt;td style="text-align:left">Ian Lance Taylor&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Generalized Types&lt;/td>
+&lt;td style="text-align:left">2011 年&lt;/td>
+&lt;td style="text-align:left">Ian Lance Taylor&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Generalized Types v2&lt;/td>
+&lt;td style="text-align:left">2013 年&lt;/td>
+&lt;td style="text-align:left">Ian Lance Taylor&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Type Parameters&lt;/td>
+&lt;td style="text-align:left">2013 年&lt;/td>
+&lt;td style="text-align:left">Ian Lance Taylor&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">go:generate&lt;/td>
+&lt;td style="text-align:left">2014 年&lt;/td>
+&lt;td style="text-align:left">Rob Pike&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">First Class Types&lt;/td>
+&lt;td style="text-align:left">2015 年&lt;/td>
+&lt;td style="text-align:left">Bryan C.Mills&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Contracts&lt;/td>
+&lt;td style="text-align:left">2018 年&lt;/td>
+&lt;td style="text-align:left">Ian Lance Taylor, Robert Griesemer&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;a href="https://go.googlesource.com/proposal/+/master/design/go2draft-contracts.md">Contracts&lt;/a>&lt;/td>
+&lt;td style="text-align:left">2019 年&lt;/td>
+&lt;td style="text-align:left">Ian Lance Taylor, Robert Griesemer&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Redundancy in Contracts(2019)&amp;rsquo;s Design&lt;/td>
+&lt;td style="text-align:left">2019 年&lt;/td>
+&lt;td style="text-align:left">Ian Lance Taylor, Robert Griesemer&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;a href="https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md">Constrained Type Parameters&lt;/a>&lt;/td>
+&lt;td style="text-align:left">2020 年&lt;/td>
+&lt;td style="text-align:left">Ian Lance Taylor, Robert Griesemer&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;a href="https://arxiv.org/pdf/2005.11710.pdf">Featherweight Go&lt;/a>&lt;/td>
+&lt;td style="text-align:left">2020年&lt;/td>
+&lt;td style="text-align:left">Ian Lance Taylor, Robert Griesemer&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">合并进 master、发布 Go 1.18、改进标准库 等&lt;/td>
+&lt;td style="text-align:left">2021 - 2022 年&lt;/td>
+&lt;td style="text-align:left">&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="golang-泛型实现原理">Golang 泛型实现原理&lt;/h2>
+&lt;h3 id="他山之石">他山之石&lt;/h3>
+&lt;h4 id="不同语言泛型实现">不同语言泛型实现&lt;/h4>
+&lt;p>&lt;a href="https://en.wikipedia.org/wiki/Object_type_(object-oriented_programming)#Boxing">boxing &lt;/a>(装箱) VS &lt;a href="https://en.wikipedia.org/wiki/Monomorphization">monomorphization&lt;/a> (单态化)&lt;/p>
+&lt;p>&lt;a href="https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/">&lt;img src="../static/flowchart-2x-16474487455315.png" alt="img">&lt;/a>&lt;/p>
+&lt;h4 id="泛型的困境">泛型的困境&lt;/h4>
+&lt;p>&lt;a href="https://research.swtch.com/generic">https://research.swtch.com/generic&lt;/a>&lt;/p>
+&lt;ul>
+&lt;li>拖累程序员: 比如 C 语言，增加了程序员的负担，需要曲折的实现，但是不对增加语言的复杂性&lt;/li>
+&lt;li>拖累编译器: 比如 C++，增加了编译器的负担，可能会产生很多冗余的代码，重复的代码还需要编译器斟酌删除，编译的文件可能非常大&lt;/li>
+&lt;li>拖累执行时间: 比如 Java，将一些装箱成 Object, 进行类型擦除。虽然减少代码冗余、减少空间，但是需要装箱拆箱操作，代码效率低&lt;/li>
+&lt;/ul>
+&lt;h3 id="go">Go&lt;/h3>
+&lt;p>Keith H. Randal 的三个方案：&lt;/p>
+&lt;p>&lt;a href="https://github.com/golang/proposal/blob/master/design/generics-implementation-dictionaries.md">Generics implementation - Dictionaries&lt;/a>&lt;/p>
+&lt;p>编译时实例化字典，字典包含为类型参数实例化的类型信息&lt;/p>
+&lt;p>&lt;a href="https://github.com/golang/proposal/blob/master/design/generics-implementation-stenciling.md">Generics implementation - Stenciling&lt;/a>&lt;/p>
+&lt;p>模板生成，为每个实例化类型生成一套独立的代码&lt;/p>
+&lt;p>&lt;a href="https://github.com/golang/proposal/blob/master/design/generics-implementation-gcshape.md">Generics implementation - GC Shape Stenciling&lt;/a>&lt;/p>
+&lt;p>混合实现，shape类型相同的类型，使用字典区分类型的不同行为，&lt;/p>
+&lt;p>类型的shape是指它对内存分配器/垃圾回收器呈现的方式，&lt;/p>
+&lt;p>包括大小、所需的对齐方式以及类型的哪些部分包含指针&lt;/p>
+&lt;h2 id="参考资料">参考资料&lt;/h2>
+&lt;p>Go 官方和社区资料：&lt;/p>
+&lt;p>&lt;a href="https://go.dev/doc/go1.18">https://go.dev/doc/go1.18&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://go.dev/doc/tutorial/generics">https://go.dev/doc/tutorial/generics&lt;/a>&lt;/p>
+&lt;p>&lt;strong>&lt;a href="https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md">https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md&lt;/a>&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://go.dev/blog/generics-proposal">https://go.dev/blog/generics-proposal&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://go.dev/blog/generics-next-step">https://go.dev/blog/generics-next-step&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://go.dev/blog/go2draft">https://go.dev/blog/go2draft&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://go.dev/blog/why-generics">https://go.dev/blog/why-generics&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://github.com/golang/proposal/blob/master/design/generics-implementation-dictionaries.md">https://github.com/golang/proposal/blob/master/design/generics-implementation-dictionaries.md&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://github.com/golang/proposal/blob/master/design/generics-implementation-stenciling.md">https://github.com/golang/proposal/blob/master/design/generics-implementation-stenciling.md&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://github.com/golang/proposal/blob/master/design/generics-implementation-gcshape.md">https://github.com/golang/proposal/blob/master/design/generics-implementation-gcshape.md&lt;/a>&lt;/p>
+&lt;p>示例用法、文章分析等：&lt;/p>
+&lt;p>&lt;a href="https://github.com/mattn/go-generics-example">https://github.com/mattn/go-generics-example&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://colobu.com/2021/08/30/how-is-go-generic-implemented/">https://colobu.com/2021/08/30/how-is-go-generic-implemented/&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://coolshell.cn/articles/21615.html">https://coolshell.cn/articles/21615.html&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://draveness.me/whys-the-design-go-generics/">https://draveness.me/whys-the-design-go-generics/&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://taoshu.in/go/go-generics-design.html">https://taoshu.in/go/go-generics-design.html&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://research.swtch.com/generic">https://research.swtch.com/generic&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/">https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/&lt;/a>&lt;/p></content></item></channel></rss>
