@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>读书笔记 on 编程随笔</title>
+    <title>读书笔记 on Ceres Cheng 的个人博客</title>
     <link>https://CeresCa.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</link>
-    <description>Recent content in 读书笔记 on 编程随笔</description>
+    <description>Recent content in 读书笔记 on Ceres Cheng 的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Tue, 15 Sep 2020 09:22:15 +0800</lastBuildDate>
-    
-	<atom:link href="https://CeresCa.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 15 Sep 2020 09:22:15 +0800</lastBuildDate><atom:link href="https://CeresCa.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Distributed Systems for Fun and Profit 笔记（二）</title>
       <link>https://CeresCa.github.io/posts/distributed-systems-for-fun-and-profit-part2/</link>
@@ -18,6 +14,107 @@
       
       <guid>https://CeresCa.github.io/posts/distributed-systems-for-fun-and-profit-part2/</guid>
       <description>2. 抽象的上下不同层次 系统模型 分布式系统中的程序： 在独立节点上同时运行 通过可能引入不确定性和消息丢失的网络连接 并且没有共享内存或共享时钟 系统模型列举了与特定系统设计相关的许多假设，实现分布式系统的环境和</description>
+      <content>&lt;h2 id=&#34;2-抽象的上下不同层次&#34;&gt;2. 抽象的上下不同层次&lt;/h2&gt;
+&lt;h3 id=&#34;系统模型&#34;&gt;系统模型&lt;/h3&gt;
+&lt;p&gt;分布式系统中的程序：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在独立节点上同时运行&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;通过可能引入不确定性和消息丢失的网络连接&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;并且没有共享内存或共享时钟&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;系统模型列举了与特定系统设计相关的许多假设，实现分布式系统的环境和设施的假设：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;节点具有什么功能以及它们如何失败&lt;/li&gt;
+&lt;li&gt;通信连接如何运行以及它们如何可能失败&lt;/li&gt;
+&lt;li&gt;整个系统的属性，例如关于时间和顺序的假设&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;健壮的系统模型做出最弱假设，强有力的假设创建易于推理的系统模型&lt;/p&gt;
+&lt;h4 id=&#34;此模型中的节点&#34;&gt;此模型中的节点&lt;/h4&gt;
+&lt;p&gt;作为计算和存储的主机：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;执行程序的能力&lt;/li&gt;
+&lt;li&gt;能够将数据存储到内存和稳定持久状态的能力&lt;/li&gt;
+&lt;li&gt;时钟&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;节点执行确定性算法&lt;/p&gt;
+&lt;p&gt;故障模型：崩溃恢复而非拜占庭容错（任意错误）&lt;/p&gt;
+&lt;h4 id=&#34;此模型中的通信连接&#34;&gt;此模型中的通信连接&lt;/h4&gt;
+&lt;p&gt;通信连接将各个节点相互连接，并任一方向发送消息&lt;/p&gt;
+&lt;p&gt;网络不可靠，消息易延迟丢失&lt;/p&gt;
+&lt;p&gt;网络分区：网络断开但节点存活&lt;/p&gt;
+&lt;h4 id=&#34;时间和顺序的假设&#34;&gt;时间和顺序的假设&lt;/h4&gt;
+&lt;p&gt;信息最多以光速传播&lt;/p&gt;
+&lt;p&gt;如果距离不同，节点间消息的到达时间、顺序可能不同&lt;/p&gt;
+&lt;h5 id=&#34;同步系统模型&#34;&gt;同步系统模型&lt;/h5&gt;
+&lt;p&gt;进程以锁定步骤执行；消息传输延迟有已知上限；每个进程都有准确的时钟&lt;/p&gt;
+&lt;h5 id=&#34;异步系统模型&#34;&gt;异步系统模型&lt;/h5&gt;
+&lt;p&gt;没有时间假设，进程以独立的速率执行；消息传输延迟没有限制；有用的时钟不存在&lt;/p&gt;
+&lt;h4 id=&#34;共识问题&#34;&gt;共识问题&lt;/h4&gt;
+&lt;p&gt;多个节点都同意一些值时达成共识&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;一致：每个正确节点都同意相同的值&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;完整：每个正确的进程最多只能决定一个值，如果决定某个值，那么一定是某些进程提议的&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;终止：所有进程最终达成决定&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;有效：如果所有正确进程提议相同的值 V，那么所有正确进程决定值 V&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;两种不可能的结果&#34;&gt;两种不可能的结果&lt;/h3&gt;
+&lt;h4 id=&#34;flp-不可能&#34;&gt;FLP 不可能&lt;/h4&gt;
+&lt;p&gt;假定节点只能因崩溃而失效；网络可靠，并且异步系统模型的典型时序假设成立：例如，消息延迟没有限制，&lt;/p&gt;
+&lt;p&gt;在网络可靠，但允许节点失效（即便只有一个）的最小化异步模型系统中，不存在一个可以解决一致性问题的确定性共识算法&lt;/p&gt;
+&lt;h4 id=&#34;cap-定理&#34;&gt;CAP 定理&lt;/h4&gt;
+&lt;p&gt;三个属性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;（强）一致性：所有节点同时看到相同的数据&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可用性：节点故障不会阻止幸存者继续运行&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;分区容错：网络或节点故障导致消息丢失时，系统仍可继续运行&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://CeresCa.github.io/static/CAP.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;同时具备这三种属性的系统无法实现：&lt;/p&gt;
+&lt;p&gt;三种不同的系统类型：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CA（一致性+可用性）：完全严格的仲裁协议，例如两阶段提交&lt;/li&gt;
+&lt;li&gt;CP（一致性+分区容错）：多数仲裁协议，其中少数分区不可用，例如Paxos&lt;/li&gt;
+&lt;li&gt;AP（可用性+分区容错）：使用冲突解决方案的协议，例如Dynamo&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://CeresCa.github.io/static/CAP_choice.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;一致性模型：程序员与系统之间的合同，其中系统保证，如果程序员遵循某些特定规则，则对数据存储区的操作结果将是可预测的&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;强一致性模型（能够维护单个副本）
+&lt;ul&gt;
+&lt;li&gt;Linearizable consistency （可线性化一致性）&lt;/li&gt;
+&lt;li&gt;Sequential consistency （顺序一致性）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;弱一致性
+&lt;ul&gt;
+&lt;li&gt;Client-centric consistency models （客户端为中心一致性）&lt;/li&gt;
+&lt;li&gt;Causal consistency: strongest model available （因果一致性）&lt;/li&gt;
+&lt;li&gt;Eventual consistency models （最终一致性）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;线性化一致性要求操作生效的顺序等于操作的实际实时顺序，顺序一致性允许对操作进行重新排序，只要在每个节点上观察到的顺序保持一致&lt;/p&gt;
+</content>
     </item>
     
     <item>
@@ -27,6 +124,81 @@
       
       <guid>https://CeresCa.github.io/posts/distributed-systems-for-fun-and-profit-part1/</guid>
       <description>0. 前言 &amp;ldquo;Distributed Systems for Fun and Profit&amp;rdquo; 是 mixu 2013 年在 网络上 免费发布的一本介绍分布式系统的小册子。 分布式的两种结果： 信息以光速传播 独立节点独自失败 分布式系统处理距离和多个节点的问题 1. 从高层次角度看分布式系统 计算机的基本任务 存储</description>
+      <content>&lt;h2 id=&#34;0-前言&#34;&gt;0. 前言&lt;/h2&gt;
+&lt;p&gt;&amp;ldquo;Distributed Systems for Fun and Profit&amp;rdquo; 是 mixu 2013 年在 &lt;a href=&#34;http://book.mixu.net/distsys/index.html&#34;&gt;网络上&lt;/a&gt; 免费发布的一本介绍分布式系统的小册子。&lt;/p&gt;
+&lt;p&gt;分布式的两种结果：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;信息以光速传播&lt;/li&gt;
+&lt;li&gt;独立节点独自失败&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;分布式系统处理距离和多个节点的问题&lt;/p&gt;
+&lt;h2 id=&#34;1-从高层次角度看分布式系统&#34;&gt;1. 从高层次角度看分布式系统&lt;/h2&gt;
+&lt;p&gt;计算机的基本任务&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;存储&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;计算&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;分布式编程就是用多机解决在单机上的相同问题，通常此问题单机已经不能满足要求。&lt;/p&gt;
+&lt;p&gt;小规模时，单个节点上升级硬件可以解决问题，但随着问题规模增大，单节点升级硬件无法解决或者成本过高时就需要分布式系统。当前最值得的是中档的商业硬件，通过容错软件降低成本。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://CeresCa.github.io/static/barroso_holzle.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;增加新机器不会像理想情况一样线性增加性能和容量。&lt;/p&gt;
+&lt;p&gt;本文重点是讨论数据中心上的分布式编程。&lt;/p&gt;
+&lt;h3 id=&#34;实现目标可扩展性等优点&#34;&gt;实现目标：可扩展性等优点&lt;/h3&gt;
+&lt;h4 id=&#34;可扩展性&#34;&gt;可扩展性&lt;/h4&gt;
+&lt;p&gt;可扩展性（Scalability）：系统、网络或进程有能力处理不断增长的工作量的能力，或者为了适应这种增长而进行扩展的能力&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;大小可扩展&lt;/li&gt;
+&lt;li&gt;地理可扩展&lt;/li&gt;
+&lt;li&gt;管理可扩展&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;性能与延迟&#34;&gt;性能与延迟&lt;/h4&gt;
+&lt;p&gt;性能（Performance）：参照资源和时间，系统完成的有效工作量&lt;/p&gt;
+&lt;p&gt;延迟（Latency）：重要是的新数据在系统中出现的时间，分布式系统中受制于光速和硬盘速度等&lt;/p&gt;
+&lt;h4 id=&#34;可用性容错&#34;&gt;可用性（容错）&lt;/h4&gt;
+&lt;p&gt;可用性（Availability）：系统处于正常运行状态的时间比例， Availability = uptime / (uptime + downtime)&lt;/p&gt;
+&lt;p&gt;分布式系统可以通过冗余实现容忍部分故障&lt;/p&gt;
+&lt;p&gt;容错（Fault tolerance）：故障发生后系统以明确定义的方式运行的能力&lt;/p&gt;
+&lt;h4 id=&#34;制约&#34;&gt;制约&lt;/h4&gt;
+&lt;p&gt;分布式系统受两个物理因素的约束：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;节点数（随所需的存储和计算能力而增加）&lt;/li&gt;
+&lt;li&gt;节点之间的距离（信息最多以光速传播）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;性能和可用性由外部定义，通常表述为SLA（服务级别协议）&lt;/p&gt;
+&lt;h4 id=&#34;抽象和模型&#34;&gt;抽象和模型&lt;/h4&gt;
+&lt;p&gt;抽象使事情变得更易于管理，模型精确描述分布式系统的关键特性。&lt;/p&gt;
+&lt;p&gt;如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;系统模型（异步/同步）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;失败模型（崩溃失败，分区，拜占庭）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一致性模型（强一致，最终一致）&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;设计技巧分区和复制&#34;&gt;设计技巧：分区和复制&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&#34;https://CeresCa.github.io/static/part-repl.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h5 id=&#34;分区partition&#34;&gt;分区（Partition）&lt;/h5&gt;
+&lt;p&gt;将大数据集划分为小的独立集&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;分区通过限制要检查的数据量并在同一分区中定位相关数据来提高性能&lt;/li&gt;
+&lt;li&gt;分区通过允许分区独立发生故障来提高可用性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;复制replication&#34;&gt;复制（Replication）&lt;/h5&gt;
+&lt;p&gt;在多机上复制相同的数据，是对抗延迟的主要办法&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;通过增加新数据副本上的计算能力和带宽来提高性能&lt;/li&gt;
+&lt;li&gt;通过创建数据的其他副本来提高可用性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;复制需要遵循一致性模型&lt;/p&gt;
+</content>
     </item>
     
   </channel>
