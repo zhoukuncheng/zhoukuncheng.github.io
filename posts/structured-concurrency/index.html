@@ -1,0 +1,197 @@
+<!doctype html><html lang=zh><head><title>Structured concurrency :: Ceres Cheng 的个人博客</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="简介 定义 根据维基百科的解释： Structured concurrency is a programming paradigm aimed at improving the clarity, quality, and development time of a computer program by using a structured approach to concurrent programming. The core concept is the encapsulation of concurrent threads of execution (here encompassing kernel and userland threads and processes) by way of control flow constructs that have clear entry and exit points and that ensure all spawned threads have completed before exit. Such encapsulation allows errors in concurrent threads to be propagated to the control structure&amp;rsquo;s parent scope and"><meta name=keywords content="[Hugo Programming]"><meta name=robots content="noodp"><link rel=canonical href=https://CeresCa.github.io/posts/structured-concurrency/><link rel=stylesheet href=https://CeresCa.github.io/assets/style.css><link rel=stylesheet href=assets/%25!s%28%3cnil%3e%29.css><link rel=apple-touch-icon href=https://CeresCa.github.io/img/apple-touch-icon-192x192.png><link rel="shortcut icon" href=https://CeresCa.github.io/img/favicon/orange.png><meta name=twitter:card content="summary"><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="og:title" content="Structured concurrency"><meta property="og:description" content="简介 定义 根据维基百科的解释： Structured concurrency is a programming paradigm aimed at improving the clarity, quality, and development time of a computer program by using a structured approach to concurrent programming. The core concept is the encapsulation of concurrent threads of execution (here encompassing kernel and userland threads and processes) by way of control flow constructs that have clear entry and exit points and that ensure all spawned threads have completed before exit. Such encapsulation allows errors in concurrent threads to be propagated to the control structure&amp;rsquo;s parent scope and"><meta property="og:url" content="https://CeresCa.github.io/posts/structured-concurrency/"><meta property="og:site_name" content="Ceres Cheng 的个人博客"><meta property="og:image" content="img/favicon/%!s().png"><meta property="og:image:width" content="2048"><meta property="og:image:height" content="1024"><meta property="article:section" content="编程"><meta property="article:published_time" content="2022-08-01 23:54:05 +0800 +0800"></head><body><div class="container headings--one-size"><header class=header><div class=header__inner><div class=header__logo><a href=https://CeresCa.github.io/><div class=logo>Terminal</div></a></div><div class=menu-trigger>menu</div></div><nav class=menu><ul class="menu__inner menu__inner--desktop"><li><a href=/>Home</a></li><li><a href=/posts/>Archive</a></li><li><a href=/tags/>Tags</a></li><li><a href=/categories/>Categories</a></li><li><a href=/about/>About</a></li></ul><ul class="menu__inner menu__inner--mobile"><li><a href=/>Home</a></li><li><a href=/posts/>Archive</a></li><li><a href=/tags/>Tags</a></li><li><a href=/categories/>Categories</a></li><li><a href=/about/>About</a></li></ul></nav></header><div class=content><div class=post><h1 class=post-title><a href=https://CeresCa.github.io/posts/structured-concurrency/>Structured concurrency</a></h1><div class=post-meta><span class=post-date>2022-08-01</span></div><span class=post-tags>#<a href=https://CeresCa.github.io/tags/golang/>Golang</a>&nbsp;
+#<a href=https://CeresCa.github.io/tags/concurrency/>Concurrency</a>&nbsp;</span><div class=table-of-contents><h2>Table of Contents</h2><nav id=TableOfContents><ul><li><a href=#定义>定义</a><ul><li><a href=#结构化编程-vs-goto>结构化编程 vs goto</a></li><li><a href=#图示>图示</a></li></ul></li><li><a href=#背景>背景</a><ul><li><a href=#发展过程>发展过程</a></li></ul></li><li><a href=#示例>示例</a></li><li><a href=#go-中的提案>Go 中的提案</a></li></ul><ul><li><a href=#并发编程需要考虑的问题>并发编程需要考虑的问题</a></li><li><a href=#go-中的解决方案>Go 中的解决方案</a><ul><li></li></ul></li></ul></nav></div><div class=post-content><div><h1 id=简介>简介<a href=#简介 class=hanchor arialabel=Anchor>&#8983;</a></h1><h2 id=定义>定义<a href=#定义 class=hanchor arialabel=Anchor>&#8983;</a></h2><p>根据维基百科的解释：
+<strong>Structured concurrency</strong> is a <a href=https://en.wikipedia.org/wiki/Programming_paradigm title="Programming paradigm">programming paradigm</a> aimed at improving the <strong>clarity, quality, and development time</strong> of a <a href=https://en.wikipedia.org/wiki/Computer_program title="Computer program">computer program</a> by using a structured approach to <a href=https://en.wikipedia.org/wiki/Concurrent_computing title="Concurrent computing">concurrent programming</a>.</p><p>The core concept is the <strong>encapsulation of concurrent threads of execution</strong> (here encompassing kernel and userland threads and processes) by way of control flow constructs that have <strong>clear entry and exit points</strong> and that ensure <strong>all spawned threads have completed before exit</strong>. Such encapsulation allows <strong>errors in concurrent threads to be propagated to the control structure&rsquo;s parent scope</strong> and managed by the native error handling mechanisms of each particular computer language. It allows control flow to remain readily evident by the structure of the source code despite the presence of concurrency. To be effective, this model <strong>must be applied consistently throughout all levels of the program</strong> – otherwise <strong>concurrent threads may leak out</strong>, become orphaned, or fail to have runtime errors correctly propagated.</p><p>Structured concurrency is analogous to <a href=https://en.wikipedia.org/wiki/Structured_programming title="Structured programming">structured programming</a>, which introduced control flow constructs that encapsulated sequential statements and subroutines.</p><p>简单来说：<strong>结构化并发（Structured Concurrency）</strong> 就是类似 <strong>结构化编程</strong> 的一个术语，目的是提高并发编程的可读性、可控制性，也就是提高开发体验和并发编程的代码质量。<br>基本概念是封装线程的执行，让它们有清晰的进入和退出点，并且所有线程都在退出前完成。<br>其中封装的手段，还包括把线程中产生的错误，委托到父级范围处理。<br>而且就算使用并发，控制流结构在源代码中依然清晰可读。</p><hr><h3 id=结构化编程-vs-goto>结构化编程 vs goto<a href=#结构化编程-vs-goto class=hanchor arialabel=Anchor>&#8983;</a></h3><p>结构化编程：使用代码块封装基本的控制流，包括常见的条件语句、循环语句以及函数调用。
+<img src=/static/Pastedimage20220731221808.png alt></p><p>goto: 不加限制的跳转。<br><img src=/static/Pastedimage20220731221638.png alt></p><hr><h3 id=图示>图示<a href=#图示 class=hanchor arialabel=Anchor>&#8983;</a></h3><p><img src=/static/Pastedimage20220731222204.png alt><br><img src=/static/Pastedimage20220731223832.png alt></p><hr><h2 id=背景>背景<a href=#背景 class=hanchor arialabel=Anchor>&#8983;</a></h2><h3 id=发展过程>发展过程<a href=#发展过程 class=hanchor arialabel=Anchor>&#8983;</a></h3><p>2016 年，ZeroMQ 的作者 Martin Sústrik 在他的 <a href=http://250bpm.com/blog:71>文章</a> 中第一次形式化的提出结构化并发这个概念。<br>2018 年 Nathaniel J. Smith 在 Python 中实现了这一范式 - <a href=https://trio.readthedocs.io/en/stable/>trio</a>，并在 <a href=https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/>Notes on structured concurrency, or: Go statement considered harmful</a> 一文中进一步阐述了 Structured Concurrency。<br>同时期，Roman Elizarov 也提出了相同的<a href=https://elizarov.medium.com/structured-concurrency-722d765aa952>理念</a>，并在 Kotlin 中实现了大家熟知的<a href=https://kotlinlang.org/docs/coroutines-basics.html>kotlinx.coroutine</a>。<br>2019 年，OpenJDK loom project 也开始引入 <a href=https://openjdk.org/jeps/428>structured concurrency</a>，作为其轻量级线程和协程的一部分。在 Java 19 中会包含此功能。<br>2022 年，Python 3.11 引入 <a href=https://realpython.com/python311-exception-groups/>task group 和 exception group</a>，官方支持了结构化并发。<br>另外，Swift、Rust 等较新的编程语言，也有官方或第三方库，实现了 Structured Concurrency。</p><hr><h2 id=示例>示例<a href=#示例 class=hanchor arialabel=Anchor>&#8983;</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>asyncio</span>  
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>httpx</span>  
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl><span class=n>client</span> <span class=o>=</span> <span class=n>httpx</span><span class=o>.</span><span class=n>AsyncClient</span><span class=p>()</span>  
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>run</span><span class=p>():</span>  
+</span></span><span class=line><span class=cl>    <span class=n>r</span> <span class=o>=</span> <span class=k>await</span> <span class=n>client</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s2>&#34;http://127.0.0.1:8000&#34;</span><span class=p>,</span> <span class=n>timeout</span><span class=o>=</span><span class=mi>3</span><span class=p>)</span>  
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>r</span><span class=o>.</span><span class=n>text</span><span class=p>)</span>  
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>main</span><span class=p>():</span>  
+</span></span><span class=line><span class=cl>    <span class=k>async</span> <span class=k>with</span> <span class=n>asyncio</span><span class=o>.</span><span class=n>timeout</span><span class=p>(</span><span class=mi>1</span><span class=p>):</span>  
+</span></span><span class=line><span class=cl>        <span class=k>async</span> <span class=k>with</span> <span class=n>asyncio</span><span class=o>.</span><span class=n>TaskGroup</span><span class=p>()</span> <span class=k>as</span> <span class=n>tg</span><span class=p>:</span>  
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>2</span><span class=p>):</span>  
+</span></span><span class=line><span class=cl>                <span class=n>tg</span><span class=o>.</span><span class=n>create_task</span><span class=p>(</span><span class=n>run</span><span class=p>())</span>  
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;all tasks have completed now.&#34;</span><span class=p>)</span>  
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl><span class=n>asyncio</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=n>main</span><span class=p>())</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>Traceback (most recent call last):
+</span></span><span class=line><span class=cl>  File &#34;C:\Users\jack\PycharmProjects\demo\main.py&#34;, line 14, in main
+</span></span><span class=line><span class=cl>    async with asyncio.TaskGroup() as tg:
+</span></span><span class=line><span class=cl>  File &#34;C:\Users\jack\.pyenv\pyenv-win\versions\3.11.0b4\Lib\asyncio\taskgroups.py&#34;, line 121, in __aexit__
+</span></span><span class=line><span class=cl>    raise propagate_cancellation_error
+</span></span><span class=line><span class=cl>  File &#34;C:\Users\jack\.pyenv\pyenv-win\versions\3.11.0b4\Lib\asyncio\taskgroups.py&#34;, line 96, in __aexit__
+</span></span><span class=line><span class=cl>    await self._on_completed_fut
+</span></span><span class=line><span class=cl>asyncio.exceptions.CancelledError
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>During handling of the above exception, another exception occurred:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Traceback (most recent call last):
+</span></span><span class=line><span class=cl>  File &#34;C:\Users\jack\PycharmProjects\demo\main.py&#34;, line 20, in &lt;module&gt;
+</span></span><span class=line><span class=cl>    asyncio.run(main())
+</span></span><span class=line><span class=cl>  File &#34;C:\Users\jack\.pyenv\pyenv-win\versions\3.11.0b4\Lib\asyncio\runners.py&#34;, line 187, in run
+</span></span><span class=line><span class=cl>    return runner.run(main)
+</span></span><span class=line><span class=cl>           ^^^^^^^^^^^^^^^^
+</span></span><span class=line><span class=cl>  File &#34;C:\Users\jack\.pyenv\pyenv-win\versions\3.11.0b4\Lib\asyncio\runners.py&#34;, line 120, in run
+</span></span><span class=line><span class=cl>    return self._loop.run_until_complete(task)
+</span></span><span class=line><span class=cl>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</span></span><span class=line><span class=cl>  File &#34;C:\Users\jack\.pyenv\pyenv-win\versions\3.11.0b4\Lib\asyncio\base_events.py&#34;, line 650, in run_until_complete
+</span></span><span class=line><span class=cl>    return future.result()
+</span></span><span class=line><span class=cl>           ^^^^^^^^^^^^^^^
+</span></span><span class=line><span class=cl>  File &#34;C:\Users\jack\PycharmProjects\demo\main.py&#34;, line 13, in main
+</span></span><span class=line><span class=cl>    async with asyncio.timeout(1):
+</span></span><span class=line><span class=cl>  File &#34;C:\Users\jack\.pyenv\pyenv-win\versions\3.11.0b4\Lib\asyncio\timeouts.py&#34;, line 98, in __aexit__
+</span></span><span class=line><span class=cl>    raise TimeoutError
+</span></span><span class=line><span class=cl>TimeoutError
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Process finished with exit code 1
+</span></span></code></pre></div><hr><h2 id=go-中的提案>Go 中的提案<a href=#go-中的提案 class=hanchor arialabel=Anchor>&#8983;</a></h2><p>有人给 Go 官方提了一个 <a href=https://github.com/golang/go/issues/29011># proposal: Go 2: use structured concurrency #29011</a>, 不过根据ianlancetaylor 等 Go 社区贡献者的意见，这个提案可能会对已有的 Go 代码造成兼容性问题，以及当前 Go 标准库中已经有 <code>context.Context</code>、<code>sync.WaitGroup</code> 、<code>x/sync/errgroup</code> 等工具，这个提案最终没有被接受。</p><hr><h1 id=在-go-中如何实践-structured-concurrency>在 Go 中如何实践 Structured Concurrency<a href=#在-go-中如何实践-structured-concurrency class=hanchor arialabel=Anchor>&#8983;</a></h1><h2 id=并发编程需要考虑的问题>并发编程需要考虑的问题<a href=#并发编程需要考虑的问题 class=hanchor arialabel=Anchor>&#8983;</a></h2><ul><li>这个任务什么时候<strong>开始</strong>，什么时候<strong>结束</strong>？</li><li>怎么做到当所有<strong>子任务都结束</strong>，主任务再结束？</li><li>假如某个子任务失败，主任务如何<strong>取消</strong>掉其他剩下子任务？</li><li>如何保证所有子任务在某个特定的<strong>超时时间</strong>内返回，无论它成功还是失败？</li><li>更进一步，如何保证主任务在<strong>规定的时间</strong>内返回，无论其成功还是失败，同时<strong>取消</strong>掉它产生的所有子任务？</li><li>主任务已经结束了，子任务还在执行，是不是存在资源泄漏？</li></ul><hr><h2 id=go-中的解决方案>Go 中的解决方案<a href=#go-中的解决方案 class=hanchor arialabel=Anchor>&#8983;</a></h2><ul><li>channel</li><li>context</li><li>waitgroup</li><li>errgroup</li></ul><h4 id=例一errgroup>例一：errgroup<a href=#例一errgroup class=hanchor arialabel=Anchor>&#8983;</a></h4><p><a href=https://pkg.go.dev/golang.org/x/sync/errgroup>链接</a></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;context&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;crypto/md5&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;io/ioutil&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;log&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;os&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;path/filepath&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;golang.org/x/sync/errgroup&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Pipeline demonstrates the use of a Group to implement a multi-stage
+</span></span></span><span class=line><span class=cl><span class=c1>// pipeline: a version of the MD5All function with bounded parallelism from
+</span></span></span><span class=line><span class=cl><span class=c1>// https://blog.golang.org/pipelines.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>m</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nf>MD5All</span><span class=p>(</span><span class=nx>context</span><span class=p>.</span><span class=nf>Background</span><span class=p>(),</span> <span class=s>&#34;.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatal</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>k</span><span class=p>,</span> <span class=nx>sum</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>m</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;%s:\t%x\n&#34;</span><span class=p>,</span> <span class=nx>k</span><span class=p>,</span> <span class=nx>sum</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>result</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>path</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl>	<span class=nx>sum</span>  <span class=p>[</span><span class=nx>md5</span><span class=p>.</span><span class=nx>Size</span><span class=p>]</span><span class=kt>byte</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// MD5All reads all the files in the file tree rooted at root and returns a map
+</span></span></span><span class=line><span class=cl><span class=c1>// from file path to the MD5 sum of the file&#39;s contents. If the directory walk
+</span></span></span><span class=line><span class=cl><span class=c1>// fails or any read operation fails, MD5All returns an error.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>MD5All</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>root</span> <span class=kt>string</span><span class=p>)</span> <span class=p>(</span><span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>][</span><span class=nx>md5</span><span class=p>.</span><span class=nx>Size</span><span class=p>]</span><span class=kt>byte</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// ctx is canceled when g.Wait() returns. When this version of MD5All returns
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=c1>// - even in case of error! - we know that all of the goroutines have finished
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=c1>// and the memory they were using can be garbage-collected.
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>g</span><span class=p>,</span> <span class=nx>ctx</span> <span class=o>:=</span> <span class=nx>errgroup</span><span class=p>.</span><span class=nf>WithContext</span><span class=p>(</span><span class=nx>ctx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>paths</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=kt>string</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>g</span><span class=p>.</span><span class=nf>Go</span><span class=p>(</span><span class=kd>func</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>defer</span> <span class=nb>close</span><span class=p>(</span><span class=nx>paths</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>filepath</span><span class=p>.</span><span class=nf>Walk</span><span class=p>(</span><span class=nx>root</span><span class=p>,</span> <span class=kd>func</span><span class=p>(</span><span class=nx>path</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>info</span> <span class=nx>os</span><span class=p>.</span><span class=nx>FileInfo</span><span class=p>,</span> <span class=nx>err</span> <span class=kt>error</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=p>!</span><span class=nx>info</span><span class=p>.</span><span class=nf>Mode</span><span class=p>().</span><span class=nf>IsRegular</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>case</span> <span class=nx>paths</span> <span class=o>&lt;-</span> <span class=nx>path</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>			<span class=k>case</span> <span class=o>&lt;-</span><span class=nx>ctx</span><span class=p>.</span><span class=nf>Done</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>				<span class=k>return</span> <span class=nx>ctx</span><span class=p>.</span><span class=nf>Err</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>		<span class=p>})</span>
+</span></span><span class=line><span class=cl>	<span class=p>})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// Start a fixed number of goroutines to read and digest files.
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>c</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=nx>result</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=kd>const</span> <span class=nx>numDigesters</span> <span class=p>=</span> <span class=mi>20</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=nx>numDigesters</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>g</span><span class=p>.</span><span class=nf>Go</span><span class=p>(</span><span class=kd>func</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>for</span> <span class=nx>path</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>paths</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=nx>data</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>ioutil</span><span class=p>.</span><span class=nf>ReadFile</span><span class=p>(</span><span class=nx>path</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>				<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>					<span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>				<span class=p>}</span>
+</span></span><span class=line><span class=cl>				<span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=k>case</span> <span class=nx>c</span> <span class=o>&lt;-</span> <span class=nx>result</span><span class=p>{</span><span class=nx>path</span><span class=p>,</span> <span class=nx>md5</span><span class=p>.</span><span class=nf>Sum</span><span class=p>(</span><span class=nx>data</span><span class=p>)}:</span>
+</span></span><span class=line><span class=cl>				<span class=k>case</span> <span class=o>&lt;-</span><span class=nx>ctx</span><span class=p>.</span><span class=nf>Done</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>					<span class=k>return</span> <span class=nx>ctx</span><span class=p>.</span><span class=nf>Err</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>				<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>		<span class=p>})</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>go</span> <span class=kd>func</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>g</span><span class=p>.</span><span class=nf>Wait</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=nb>close</span><span class=p>(</span><span class=nx>c</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>m</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>][</span><span class=nx>md5</span><span class=p>.</span><span class=nx>Size</span><span class=p>]</span><span class=kt>byte</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>r</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>c</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>m</span><span class=p>[</span><span class=nx>r</span><span class=p>.</span><span class=nx>path</span><span class=p>]</span> <span class=p>=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>sum</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// Check whether any of the goroutines failed. Since g is accumulating the
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=c1>// errors, we don&#39;t need to send them (or check for them) in the individual
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=c1>// results sent on the channel.
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>g</span><span class=p>.</span><span class=nf>Wait</span><span class=p>();</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>m</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h4 id=errgroup-源码分析>errgroup 源码分析<a href=#errgroup-源码分析 class=hanchor arialabel=Anchor>&#8983;</a></h4><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Group</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>cancel</span> <span class=kd>func</span><span class=p>()</span>       <span class=c1>// 封装context cancel 方法
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>wg</span> <span class=nx>sync</span><span class=p>.</span><span class=nx>WaitGroup</span>   <span class=c1>// 使用 waitGroup 同步
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>sem</span> <span class=kd>chan</span> <span class=nx>token</span>      <span class=c1>// 使用 channel 限制数量
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>errOnce</span> <span class=nx>sync</span><span class=p>.</span><span class=nx>Once</span>   <span class=c1>// 只执行一次
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>err</span>     <span class=kt>error</span>       <span class=c1>// 保存执行的错误信息
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Wait blocks until all function calls from the Go method have returned, then
+</span></span></span><span class=line><span class=cl><span class=c1>// returns the first non-nil error (if any) from them.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>g</span> <span class=o>*</span><span class=nx>Group</span><span class=p>)</span> <span class=nf>Wait</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>g</span><span class=p>.</span><span class=nx>wg</span><span class=p>.</span><span class=nf>Wait</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>g</span><span class=p>.</span><span class=nx>cancel</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>g</span><span class=p>.</span><span class=nf>cancel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>g</span><span class=p>.</span><span class=nx>err</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Go calls the given function in a new goroutine.
+</span></span></span><span class=line><span class=cl><span class=c1>// It blocks until the new goroutine can be added without the number of
+</span></span></span><span class=line><span class=cl><span class=c1>// active goroutines in the group exceeding the configured limit.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// The first call to return a non-nil error cancels the group; its error will be
+</span></span></span><span class=line><span class=cl><span class=c1>// returned by Wait.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>g</span> <span class=o>*</span><span class=nx>Group</span><span class=p>)</span> <span class=nf>Go</span><span class=p>(</span><span class=nx>f</span> <span class=kd>func</span><span class=p>()</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>g</span><span class=p>.</span><span class=nx>sem</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>g</span><span class=p>.</span><span class=nx>sem</span> <span class=o>&lt;-</span> <span class=nx>token</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>g</span><span class=p>.</span><span class=nx>wg</span><span class=p>.</span><span class=nf>Add</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>go</span> <span class=kd>func</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>defer</span> <span class=nx>g</span><span class=p>.</span><span class=nf>done</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nf>f</span><span class=p>();</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>g</span><span class=p>.</span><span class=nx>errOnce</span><span class=p>.</span><span class=nf>Do</span><span class=p>(</span><span class=kd>func</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=nx>g</span><span class=p>.</span><span class=nx>err</span> <span class=p>=</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>				<span class=k>if</span> <span class=nx>g</span><span class=p>.</span><span class=nx>cancel</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>					<span class=nx>g</span><span class=p>.</span><span class=nf>cancel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>				<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=p>})</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h4 id=例二waitgroup>例二：waitGroup<a href=#例二waitgroup class=hanchor arialabel=Anchor>&#8983;</a></h4><p><a href=https://github.com/arunsworld/nursery/blob/ecfe7a688cfd866de0da8ecff34de72b34d22f53/nursery.go>https://github.com/arunsworld/nursery/blob/ecfe7a688cfd866de0da8ecff34de72b34d22f53/nursery.go</a></p><hr><h1 id=参考与引用>参考与引用<a href=#参考与引用 class=hanchor arialabel=Anchor>&#8983;</a></h1><p><a href=https://en.wikipedia.org/wiki/Structured_concurrency>https://en.wikipedia.org/wiki/Structured_concurrency</a><br><a href=http://250bpm.com/blog:71>http://250bpm.com/blog:71</a><br><a href=https://trio.readthedocs.io/en/stable/>https://trio.readthedocs.io/en/stable/</a><br><a href=https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/>https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/</a><br><a href=https://medium.com/@elizarov/structured-concurrency-722d765aa952>https://medium.com/@elizarov/structured-concurrency-722d765aa952</a><br><a href=https://kotlinlang.org/docs/coroutines-basics.html>https://kotlinlang.org/docs/coroutines-basics.html</a><br><a href=https://github.com/golang/go/issues/29011>https://github.com/golang/go/issues/29011</a><br><a href=https://github.com/arunsworld/nursery/blob/master/nursery.go>https://github.com/arunsworld/nursery/blob/master/nursery.go</a><br><a href=https://arunsworld.medium.com/structured-concurrency-in-go-b800c7c4434e>https://arunsworld.medium.com/structured-concurrency-in-go-b800c7c4434e</a><br><a href=https://realpython.com/python311-exception-groups/>https://realpython.com/python311-exception-groups/</a><br><a href=https://zhuanlan.zhihu.com/p/108759542>https://zhuanlan.zhihu.com/p/108759542</a><br><a href=https://onevcat.com/2021/09/structured-concurrency/>https://onevcat.com/2021/09/structured-concurrency/</a><br><a href=https://blog.softwaremill.com/structured-concurrency-and-pure-functions-92dd8ed1a9f2>https://blog.softwaremill.com/structured-concurrency-and-pure-functions-92dd8ed1a9f2</a></p></div></div></div></div><footer class=footer><div class=footer__inner><div class=copyright><span>© 2022 Powered by <a href=http://gohugo.io>Hugo</a></span>
+<span>:: Theme made by <a href=https://twitter.com/panr>panr</a></span></div></div></footer><script src=https://CeresCa.github.io/assets/main.js></script>
+<script src=https://CeresCa.github.io/assets/prism.js></script></div></body></html>
