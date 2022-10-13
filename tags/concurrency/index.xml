@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Concurrency on Ceres Cheng 的个人博客</title><link>https://CeresCa.github.io/tags/concurrency/</link><description>Recent content in Concurrency on Ceres Cheng 的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Mon, 01 Aug 2022 23:54:05 +0800</lastBuildDate><atom:link href="https://CeresCa.github.io/tags/concurrency/index.xml" rel="self" type="application/rss+xml"/><item><title>Structured concurrency</title><link>https://CeresCa.github.io/posts/structured-concurrency/</link><pubDate>Mon, 01 Aug 2022 23:54:05 +0800</pubDate><guid>https://CeresCa.github.io/posts/structured-concurrency/</guid><description>简介 定义 根据维基百科的解释： Structured concurrency is a programming paradigm aimed at improving the clarity, quality, and development time of a computer program by using a structured approach to concurrent programming. The core concept is the encapsulation of concurrent threads of execution (here encompassing kernel and userland threads and processes) by way of control flow constructs that have clear entry and exit points and that ensure all spawned threads have completed before exit. Such encapsulation allows errors in concurrent threads to be propagated to the control structure&amp;rsquo;s parent scope and</description><content>&lt;h1 id="简介">简介&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Concurrency on Jack Cheng 的个人博客</title><link>https://khuencheng.github.io/tags/concurrency/</link><description>Recent content in Concurrency on Jack Cheng 的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Mon, 01 Aug 2022 23:54:05 +0800</lastBuildDate><atom:link href="https://khuencheng.github.io/tags/concurrency/index.xml" rel="self" type="application/rss+xml"/><item><title>Structured concurrency</title><link>https://khuencheng.github.io/posts/structured-concurrency/</link><pubDate>Mon, 01 Aug 2022 23:54:05 +0800</pubDate><guid>https://khuencheng.github.io/posts/structured-concurrency/</guid><description>简介 定义 根据维基百科的解释： Structured concurrency is a programming paradigm aimed at improving the clarity, quality, and development time of a computer program by using a structured approach to concurrent programming. The core concept is the encapsulation of concurrent threads of execution (here encompassing kernel and userland threads and processes) by way of control flow constructs that have clear entry and exit points and that ensure all spawned threads have completed before exit. Such encapsulation allows errors in concurrent threads to be propagated to the control structure&amp;rsquo;s parent scope and</description><content>&lt;h1 id="简介">简介&lt;/h1>
 &lt;h2 id="定义">定义&lt;/h2>
 &lt;p>根据维基百科的解释：
 &lt;strong>Structured concurrency&lt;/strong> is a &lt;a href="https://en.wikipedia.org/wiki/Programming_paradigm" title="Programming paradigm">programming paradigm&lt;/a> aimed at improving the &lt;strong>clarity, quality, and development time&lt;/strong> of a &lt;a href="https://en.wikipedia.org/wiki/Computer_program" title="Computer program">computer program&lt;/a> by using a structured approach to &lt;a href="https://en.wikipedia.org/wiki/Concurrent_computing" title="Concurrent computing">concurrent programming&lt;/a>.&lt;/p>
@@ -11,13 +11,13 @@
 &lt;hr>
 &lt;h3 id="结构化编程-vs-goto">结构化编程 vs goto&lt;/h3>
 &lt;p>结构化编程：使用代码块封装基本的控制流，包括常见的条件语句、循环语句以及函数调用。
-&lt;img src="https://CeresCa.github.io/static/Pastedimage20220731221808.png" alt="">&lt;/p>
+&lt;img src="https://khuencheng.github.io/static/Pastedimage20220731221808.png" alt="">&lt;/p>
 &lt;p>goto: 不加限制的跳转。&lt;br>
-&lt;img src="https://CeresCa.github.io/static/Pastedimage20220731221638.png" alt="">&lt;/p>
+&lt;img src="https://khuencheng.github.io/static/Pastedimage20220731221638.png" alt="">&lt;/p>
 &lt;hr>
 &lt;h3 id="图示">图示&lt;/h3>
-&lt;p>&lt;img src="https://CeresCa.github.io/static/Pastedimage20220731222204.png" alt="">&lt;br>
-&lt;img src="https://CeresCa.github.io/static/Pastedimage20220731223832.png" alt="">&lt;/p>
+&lt;p>&lt;img src="https://khuencheng.github.io/static/Pastedimage20220731222204.png" alt="">&lt;br>
+&lt;img src="https://khuencheng.github.io/static/Pastedimage20220731223832.png" alt="">&lt;/p>
 &lt;hr>
 &lt;h2 id="背景">背景&lt;/h2>
 &lt;h3 id="发展过程">发展过程&lt;/h3>
@@ -261,7 +261,7 @@
 &lt;a href="https://realpython.com/python311-exception-groups/">https://realpython.com/python311-exception-groups/&lt;/a>&lt;br>
 &lt;a href="https://zhuanlan.zhihu.com/p/108759542">https://zhuanlan.zhihu.com/p/108759542&lt;/a>&lt;br>
 &lt;a href="https://onevcat.com/2021/09/structured-concurrency/">https://onevcat.com/2021/09/structured-concurrency/&lt;/a>&lt;br>
-&lt;a href="https://blog.softwaremill.com/structured-concurrency-and-pure-functions-92dd8ed1a9f2">https://blog.softwaremill.com/structured-concurrency-and-pure-functions-92dd8ed1a9f2&lt;/a>&lt;/p></content></item><item><title>Python 与 Go 之间的并发模式差异</title><link>https://CeresCa.github.io/posts/concurrency-model-differences-between-python-go/</link><pubDate>Mon, 30 Aug 2021 23:54:05 +0800</pubDate><guid>https://CeresCa.github.io/posts/concurrency-model-differences-between-python-go/</guid><description>Python并发方式 在 Python 中，早期并发方式以传统的多进程和多线程为主，类似 Java，同时，有不少第三方的异步方案（gevent/tornado/twisted 等）。 在 Python 3 时期，官方推出了 asyncio 和 async await 语法，作</description><content>&lt;h2 id="python并发方式">Python并发方式&lt;/h2>
+&lt;a href="https://blog.softwaremill.com/structured-concurrency-and-pure-functions-92dd8ed1a9f2">https://blog.softwaremill.com/structured-concurrency-and-pure-functions-92dd8ed1a9f2&lt;/a>&lt;/p></content></item><item><title>Python 与 Go 之间的并发模式差异</title><link>https://khuencheng.github.io/posts/concurrency-model-differences-between-python-go/</link><pubDate>Mon, 30 Aug 2021 23:54:05 +0800</pubDate><guid>https://khuencheng.github.io/posts/concurrency-model-differences-between-python-go/</guid><description>Python并发方式 在 Python 中，早期并发方式以传统的多进程和多线程为主，类似 Java，同时，有不少第三方的异步方案（gevent/tornado/twisted 等）。 在 Python 3 时期，官方推出了 asyncio 和 async await 语法，作</description><content>&lt;h2 id="python并发方式">Python并发方式&lt;/h2>
 &lt;p>在 Python 中，早期并发方式以传统的多进程和多线程为主，类似 Java，同时，有不少第三方的异步方案（gevent/tornado/twisted 等）。&lt;br>
 在 Python 3 时期，官方推出了 asyncio 和 async await 语法，作为 Python 官方的协程实现，而逐渐普及。&lt;/p>
 &lt;h3 id="进程">进程&lt;/h3>
