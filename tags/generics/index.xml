@@ -249,7 +249,7 @@
 &lt;h3 id="他山之石">他山之石&lt;/h3>
 &lt;h4 id="不同语言泛型实现">不同语言泛型实现&lt;/h4>
 &lt;p>&lt;a href="https://en.wikipedia.org/wiki/Object_type_(object-oriented_programming)#Boxing">boxing &lt;/a>(装箱) VS &lt;a href="https://en.wikipedia.org/wiki/Monomorphization">monomorphization&lt;/a> (单态化)&lt;/p>
-&lt;p>&lt;a href="https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/">&lt;img src="./../static/flowchart-2x-16474487455315.png" alt="img">&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/">&lt;img src="https://khuencheng.github.io/static/flowchart-2x-16474487455315.png" alt="img">&lt;/a>&lt;/p>
 &lt;h4 id="泛型的困境">泛型的困境&lt;/h4>
 &lt;p>&lt;a href="https://research.swtch.com/generic">https://research.swtch.com/generic&lt;/a>&lt;/p>
 &lt;ul>

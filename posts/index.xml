@@ -79,7 +79,7 @@
 &lt;/ul>
 &lt;hr>
 &lt;h1 id="github-flow">GIthub Flow&lt;/h1>
-&lt;p>&lt;img src="./../static/Pastedimage20230212221531.png" alt="">&lt;/p>
+&lt;p>&lt;img src="https://khuencheng.github.io/static/Pastedimage20230212221531.png" alt="">&lt;/p>
 &lt;h2 id="与-gitlab-flow-区别">与 Gitlab Flow 区别&lt;/h2>
 &lt;p>Github Flow:&lt;/p>
 &lt;ul>
@@ -88,7 +88,7 @@
 &lt;li>Github Flow 适用于快速迭代和小团队，但对于大型项目可能会显得过于简单，并可能需要更严格的代码审查和测试。&lt;/li>
 &lt;/ul>
 &lt;p>GitLab Flow:
-&lt;img src="./../static/Pastedimage20230222233037.png" alt="">&lt;/p>
+&lt;img src="https://khuencheng.github.io/static/Pastedimage20230222233037.png" alt="">&lt;/p>
 &lt;ul>
 &lt;li>GitLab Flow 是基于 Github Flow 的增强版本，它更加适合大型、复杂的项目，并提供了更多的自动化和流程控制功能。&lt;/li>
 &lt;li>在GitLab Flow 中，代码是在 feature 分支上进行开发的，类似于 Github Flow，但是它还包括了一个额外的环节——预备环节（preparation stage），用于在开发人员完成特性分支之前进行自动化测试和代码审查等操作，确保代码质量和可靠性。&lt;/li>
@@ -104,19 +104,19 @@
 &lt;li>DCO 由 Linux Foundation 提出，是固定的简短条文（只有4条），旨在让贡献者保证遵守开源 license；&lt;/li>
 &lt;li>CLA 是对开源 license 的法律性质补充，由法务制定；&lt;/li>
 &lt;li>CLA 可以自定义，不论是个人还是企业级签署的时候都需要提供详细的信息，如姓名、公司、邮箱、地址、电话等；
-&lt;img src="./../static/Pastedimage20230214235748.png" alt="">&lt;/li>
+&lt;img src="https://khuencheng.github.io/static/Pastedimage20230214235748.png" alt="">&lt;/li>
 &lt;/ul>
 &lt;h3 id="cla-ci-状态示例">CLA CI 状态示例&lt;/h3>
 &lt;p>&lt;img src="https://user-images.githubusercontent.com/3787410/184355311-b0d20be2-35cc-40b2-bb8c-917906bcb8d2.png" alt="">
 &lt;img src="https://user-images.githubusercontent.com/1173057/35363360-98c9f2c4-0137-11e8-91bc-898e8b7ffbea.png" alt="">&lt;/p>
 &lt;h3 id="dco-ci-状态示例">DCO CI 状态示例&lt;/h3>
-&lt;p>&lt;img src="./../static/Pastedimage20230214235447.png" alt="">
+&lt;p>&lt;img src="https://khuencheng.github.io/static/Pastedimage20230214235447.png" alt="">
 &lt;img src="https://user-images.githubusercontent.com/13410355/42352737-35da3d0e-8071-11e8-99ae-6e7068e257e1.png" alt="">&lt;/p>
 &lt;hr>
 &lt;h2 id="项目结构">项目结构&lt;/h2>
 &lt;p>src, build, doc 等等&lt;/p>
 &lt;h2 id="项目文档">项目文档&lt;/h2>
-&lt;p>&lt;img src="./../static/Pastedimage20230215113144.png" alt="">&lt;/p>
+&lt;p>&lt;img src="https://khuencheng.github.io/static/Pastedimage20230215113144.png" alt="">&lt;/p>
 &lt;ul>
 &lt;li>&lt;strong>LICENSE:&lt;/strong> 根据开源软件的定义，每一个开源项目必须是有&lt;a href="https://choosealicense.com/">开源许可协议&lt;/a>的. 可以这么认为：假如说某个项目源码开放，但是没有任何的许可协议，那么它就不能叫做开源。&lt;/li>
 &lt;li>&lt;strong>README:&lt;/strong> README 是一个介绍性的说明文件，对初次光临社区的人们表示欢迎，它通常会解释项目有何用处，为何发起，以及如何快速入门等。&lt;/li>
@@ -127,11 +127,11 @@
 &lt;h2 id="项目讨论">项目讨论&lt;/h2>
 &lt;ul>
 &lt;li>&lt;strong>Issues:&lt;/strong> 讨论项目相关问题的地方，和企业内部沟通测试 bug 的 Jira 类似。
-&lt;img src="./../static/Pastedimage20230215112948.png" alt="">&lt;/li>
+&lt;img src="https://khuencheng.github.io/static/Pastedimage20230215112948.png" alt="">&lt;/li>
 &lt;li>&lt;strong>Pull requests:&lt;/strong> 审核代码、以及相关的问题讨论。
-&lt;img src="./../static/Pastedimage20230215112959.png" alt="">&lt;/li>
+&lt;img src="https://khuencheng.github.io/static/Pastedimage20230215112959.png" alt="">&lt;/li>
 &lt;li>&lt;strong>论坛或邮件列表:&lt;/strong> 如 &lt;a href="https://groups.google.com/g/golang-dev">Golang&lt;/a>、Python、Linux。
-&lt;img src="./../static/Pastedimage20230214000400.png" alt="">&lt;/li>
+&lt;img src="https://khuencheng.github.io/static/Pastedimage20230214000400.png" alt="">&lt;/li>
 &lt;li>&lt;strong>即时聊天:&lt;/strong> 有一些项目会使用聊天频道（诸如 Slack 、IRC、Gitter），从而能够随意的谈话、协作和快速交流。&lt;/li>
 &lt;/ul>
 &lt;h2 id="ci">CI&lt;/h2>
@@ -177,14 +177,14 @@
 &lt;li>DeepL Write
 &lt;ul>
 &lt;li>DeepL 翻译推出的语法和文章检查工具。
-&lt;img src="./../static/Pastedimage20230214001315.png" alt="">&lt;/li>
+&lt;img src="https://khuencheng.github.io/static/Pastedimage20230214001315.png" alt="">&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>ChatGPT/BingChat
 &lt;ul>
 &lt;li>对话式机器人，可以命令它编写英文描述或者检查语法。
-&lt;img src="./../static/Pastedimage20230222225717.png" alt="">
-&lt;img src="./../static/Pastedimage20230223001608.png" alt="">&lt;/li>
+&lt;img src="https://khuencheng.github.io/static/Pastedimage20230222225717.png" alt="">
+&lt;img src="https://khuencheng.github.io/static/Pastedimage20230223001608.png" alt="">&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -743,7 +743,7 @@
 &lt;h3 id="他山之石">他山之石&lt;/h3>
 &lt;h4 id="不同语言泛型实现">不同语言泛型实现&lt;/h4>
 &lt;p>&lt;a href="https://en.wikipedia.org/wiki/Object_type_(object-oriented_programming)#Boxing">boxing &lt;/a>(装箱) VS &lt;a href="https://en.wikipedia.org/wiki/Monomorphization">monomorphization&lt;/a> (单态化)&lt;/p>
-&lt;p>&lt;a href="https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/">&lt;img src="./../static/flowchart-2x-16474487455315.png" alt="img">&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/">&lt;img src="https://khuencheng.github.io/static/flowchart-2x-16474487455315.png" alt="img">&lt;/a>&lt;/p>
 &lt;h4 id="泛型的困境">泛型的困境&lt;/h4>
 &lt;p>&lt;a href="https://research.swtch.com/generic">https://research.swtch.com/generic&lt;/a>&lt;/p>
 &lt;ul>
