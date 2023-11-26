@@ -1,4 +1,235 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Jack Cheng 的个人博客</title><link>https://khuencheng.github.io/</link><description>Recent content on Jack Cheng 的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Mon, 01 Aug 2022 23:54:05 +0800</lastBuildDate><atom:link href="https://khuencheng.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Structured concurrency</title><link>https://khuencheng.github.io/posts/structured-concurrency/</link><pubDate>Mon, 01 Aug 2022 23:54:05 +0800</pubDate><guid>https://khuencheng.github.io/posts/structured-concurrency/</guid><description>简介 定义 根据维基百科的解释： Structured concurrency is a programming paradigm aimed at improving the clarity, quality, and development time of a computer program by using a structured approach to concurrent programming. The core concept is the encapsulation of concurrent threads of execution (here encompassing kernel and userland threads and processes) by way of control flow constructs that have clear entry and exit points and that ensure all spawned threads have completed before exit. Such encapsulation allows errors in concurrent threads to be propagated to the control structure&amp;rsquo;s parent scope and</description><content>&lt;h1 id="简介">简介&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Jack Cheng 的个人博客</title><link>https://khuencheng.github.io/</link><description>Recent content on Jack Cheng 的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sun, 26 Nov 2023 01:11:34 +0800</lastBuildDate><atom:link href="https://khuencheng.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>如何成为开源项目的贡献者</title><link>https://khuencheng.github.io/posts/opensource-contribution/</link><pubDate>Sun, 26 Nov 2023 01:11:34 +0800</pubDate><guid>https://khuencheng.github.io/posts/opensource-contribution/</guid><description>简介 基本流程 挑选项目 工作中接触 日常使用 熟悉项目使用的技术栈 …… 发现问题 代码 拼写 文档 测试 …… fork 修改 代码 测试 注释 文档 签署开源贡献协议 CLA DCO 提交 pull request CI review merge 后续 关闭 issue 等待 release 持续贡献，成为维护者 总体原则 如何成为合</description><content>&lt;h1 id="简介">简介&lt;/h1>
+&lt;h2 id="基本流程">基本流程&lt;/h2>
+&lt;ul>
+&lt;li>挑选项目
+&lt;ul>
+&lt;li>工作中接触&lt;/li>
+&lt;li>日常使用&lt;/li>
+&lt;li>熟悉项目使用的技术栈&lt;/li>
+&lt;li>……&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>发现问题
+&lt;ul>
+&lt;li>代码&lt;/li>
+&lt;li>拼写&lt;/li>
+&lt;li>文档&lt;/li>
+&lt;li>测试&lt;/li>
+&lt;li>……&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>fork&lt;/li>
+&lt;li>修改
+&lt;ul>
+&lt;li>代码&lt;/li>
+&lt;li>测试&lt;/li>
+&lt;li>注释&lt;/li>
+&lt;li>文档&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>签署开源贡献协议
+&lt;ul>
+&lt;li>CLA&lt;/li>
+&lt;li>DCO&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>提交 pull request
+&lt;ul>
+&lt;li>CI&lt;/li>
+&lt;li>review&lt;/li>
+&lt;li>merge&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>后续
+&lt;ul>
+&lt;li>关闭 issue&lt;/li>
+&lt;li>等待 release&lt;/li>
+&lt;li>持续贡献，成为维护者&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="总体原则">总体原则&lt;/h2>
+&lt;h3 id="如何成为合格的开源项目贡献者">如何成为合格的开源项目贡献者&lt;/h3>
+&lt;ul>
+&lt;li>确定你的技能和技术栈，选择与之匹配的开源项目&lt;/li>
+&lt;li>了解开源项目的代码结构、功能和规范，并阅读其贡献指南&lt;/li>
+&lt;li>各类贡献都可以，可以是修复 bug、添加功能、编写文档、测试等&lt;/li>
+&lt;li>从小的修改开始，比如修改文档、拼写，增加测试代码，修复影响范围较小 bug&lt;/li>
+&lt;li>核心流程：创建并提交 pull request (PR)，并等待其他贡献者的评审和反馈&lt;/li>
+&lt;li>与其他贡献者保持良好的沟通和协作&lt;/li>
+&lt;li>遵循开源项目的行为准则&lt;/li>
+&lt;/ul>
+&lt;h3 id="非英语母语者如何更好地参与">非英语母语者如何更好地参与&lt;/h3>
+&lt;ul>
+&lt;li>提高英语水平，尤其是阅读和写作能力，这样才能更好地理解项目的需求、文档和代码，并能够清晰地表达想法和建议&lt;/li>
+&lt;li>选择一些有活跃社区和友好氛围的开源项目，这样可以得到更多的帮助和支持，也可以学习其他贡献者的经验和技巧&lt;/li>
+&lt;li>遵循开源项目的贡献流程，如 fork、clone、branch、commit、push 和 pull request 等，并遵守项目的编码风格和规范&lt;/li>
+&lt;li>在提交 issue 或 PR 时，尽量使用简单明了的英语描述问题或功能，并附上相关的截图或代码片段&lt;/li>
+&lt;li>在与其他贡献者沟通时，保持礼貌和尊重，不要害怕提问或回答问题，并及时回复他们的评审和反馈&lt;/li>
+&lt;li>如果对某些英语单词或表达不确定，可以使用在词典、翻译或语法检查工具进行辅助交流&lt;/li>
+&lt;/ul>
+&lt;h3 id="如何让开源项目维护者迅速-review-自己的-pr">如何让开源项目维护者迅速 review 自己的 PR&lt;/h3>
+&lt;ul>
+&lt;li>遵循项目指南：在提交 pull request 之前，请务必查看并遵循项目的贡献指南。确保请求符合项目的规范和标准。&lt;/li>
+&lt;li>确保代码风格一致：遵循项目的代码风格和格式要求，以减少维护者在 review 时需要修改的代码量。&lt;/li>
+&lt;li>提供详细描述：在提交 pull request 时，确保提供足够详细的描述，说明修改如何解决问题或改进项目。&lt;/li>
+&lt;li>提供测试用例：尽量保证新增的代码被覆盖到，有些项目会检测单测覆盖率和覆盖行。&lt;/li>
+&lt;li>及时回复评论：一旦您的 pull request 得到 review，尽可能快地回复维护者的评论，并考虑讨论的意见和建议。&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h1 id="github-flow">GIthub Flow&lt;/h1>
+&lt;p>![[../static/Pastedimage20230212221531.png]]&lt;/p>
+&lt;h2 id="与-gitlab-flow-区别">与 Gitlab Flow 区别&lt;/h2>
+&lt;p>Github Flow:&lt;/p>
+&lt;ul>
+&lt;li>Github Flow 是一种简单的工作流程，主要包括创建分支、提交代码、发送pull request和合并分支。这是一个快速迭代的流程，适用于小型团队和敏捷开发。&lt;/li>
+&lt;li>在Github Flow 中，代码是在 master 分支上进行开发的。开发人员基于 master 创建新分支，开发并测试功能，然后向主分支发送 Pull Request，请求代码审查并将分支合并到主分支中。&lt;/li>
+&lt;li>Github Flow 适用于快速迭代和小团队，但对于大型项目可能会显得过于简单，并可能需要更严格的代码审查和测试。&lt;/li>
+&lt;/ul>
+&lt;p>GitLab Flow:
+![[../static/Pastedimage20230222233037.png]]&lt;/p>
+&lt;ul>
+&lt;li>GitLab Flow 是基于 Github Flow 的增强版本，它更加适合大型、复杂的项目，并提供了更多的自动化和流程控制功能。&lt;/li>
+&lt;li>在GitLab Flow 中，代码是在 feature 分支上进行开发的，类似于 Github Flow，但是它还包括了一个额外的环节——预备环节（preparation stage），用于在开发人员完成特性分支之前进行自动化测试和代码审查等操作，确保代码质量和可靠性。&lt;/li>
+&lt;li>GitLab Flow 通过打标签或者 cherry-pick 的方式来管理发布版本。&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h1 id="熟悉项目">熟悉项目&lt;/h1>
+&lt;h2 id="开源协议">开源协议&lt;/h2>
+&lt;h2 id="httpswwwruanyifengcomblogimgasset201105free_software_licensespng">&lt;img src="https://www.ruanyifeng.com/blogimg/asset/201105/free_software_licenses.png" alt="">&lt;/h2>
+&lt;h2 id="开源贡献协议">开源贡献协议&lt;/h2>
+&lt;ul>
+&lt;li>开源贡献协议有 CLA（Contributor License Agreement）和 &lt;a href="https://developercertificate.org/" title="DCO">DCO&lt;/a> （Developer Certificate of Origin）两种；&lt;/li>
+&lt;li>DCO 由 Linux Foundation 提出，是固定的简短条文（只有4条），旨在让贡献者保证遵守开源 license；&lt;/li>
+&lt;li>CLA 是对开源 license 的法律性质补充，由法务制定；&lt;/li>
+&lt;li>CLA 可以自定义，不论是个人还是企业级签署的时候都需要提供详细的信息，如姓名、公司、邮箱、地址、电话等；
+![[../static/Pastedimage20230214235748.png]]&lt;/li>
+&lt;/ul>
+&lt;h3 id="cla-ci-状态示例">CLA CI 状态示例&lt;/h3>
+&lt;p>&lt;img src="https://user-images.githubusercontent.com/3787410/184355311-b0d20be2-35cc-40b2-bb8c-917906bcb8d2.png" alt="">
+&lt;img src="https://user-images.githubusercontent.com/1173057/35363360-98c9f2c4-0137-11e8-91bc-898e8b7ffbea.png" alt="">&lt;/p>
+&lt;h3 id="dco-ci-状态示例">DCO CI 状态示例&lt;/h3>
+&lt;p>![[../static/Pastedimage20230214235447.png]]
+&lt;img src="https://user-images.githubusercontent.com/13410355/42352737-35da3d0e-8071-11e8-99ae-6e7068e257e1.png" alt="">&lt;/p>
+&lt;hr>
+&lt;h2 id="项目结构">项目结构&lt;/h2>
+&lt;p>src, build, doc 等等&lt;/p>
+&lt;h2 id="项目文档">项目文档&lt;/h2>
+&lt;p>![[../static/Pastedimage20230215113144.png]]&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>LICENSE:&lt;/strong> 根据开源软件的定义，每一个开源项目必须是有&lt;a href="https://choosealicense.com/">开源许可协议&lt;/a>的. 可以这么认为：假如说某个项目源码开放，但是没有任何的许可协议，那么它就不能叫做开源。&lt;/li>
+&lt;li>&lt;strong>README:&lt;/strong> README 是一个介绍性的说明文件，对初次光临社区的人们表示欢迎，它通常会解释项目有何用处，为何发起，以及如何快速入门等。&lt;/li>
+&lt;li>&lt;strong>CONTRIBUTING:&lt;/strong> README 文件帮助人们来认识项目，而 CONTRIBUTING 文件则是告诉人们对项目如何做贡献。它解释了目前项目需要什么样类型的贡献者，社区的流程是什么样的。并非所有的项目都会有这个文件，它某种程度上也是展示项目对于贡献者的友好程度。&lt;/li>
+&lt;li>&lt;strong>CODE_OF_CONDUCT:&lt;/strong> 顾名思义，即是一些参与社区时的一些礼仪、说话方式、行为等，让社区形成一种友好的氛围，不是所有的项目都会撰写行为准则文件，它某种程度上也是展示项目对于贡献者的友好程度。&lt;/li>
+&lt;li>&lt;strong>其它文档:&lt;/strong> 有些项目也许还有其它文档，例如教程、导游，或者是治理规则，这在大型项目中常见。&lt;/li>
+&lt;/ul>
+&lt;h2 id="项目讨论">项目讨论&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>Issues:&lt;/strong> 讨论项目相关问题的地方，和企业内部沟通测试 bug 的 Jira 类似。
+![[../static/Pastedimage20230215112948.png]]&lt;/li>
+&lt;li>&lt;strong>Pull requests:&lt;/strong> 审核代码、以及相关的问题讨论。
+![[../static/Pastedimage20230215112959.png]]&lt;/li>
+&lt;li>&lt;strong>论坛或邮件列表:&lt;/strong> 如 &lt;a href="https://groups.google.com/g/golang-dev">Golang&lt;/a>、Python、Linux。
+![[../static/Pastedimage20230214000400.png]]&lt;/li>
+&lt;li>&lt;strong>即时聊天:&lt;/strong> 有一些项目会使用聊天频道（诸如 Slack 、IRC、Gitter），从而能够随意的谈话、协作和快速交流。&lt;/li>
+&lt;/ul>
+&lt;h2 id="ci">CI&lt;/h2>
+&lt;ul>
+&lt;li>Github Actions
+&lt;ul>
+&lt;li>&lt;img src="https://github.githubassets.com/images/modules/site/actions/pr-checks-final.webp" alt="">&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Travis-CI&lt;/li>
+&lt;li>……&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h1 id="pull-request">Pull Request&lt;/h1>
+&lt;h2 id="沟通交流">沟通交流&lt;/h2>
+&lt;h3 id="提高英文书面表达能力">提高英文书面表达能力&lt;/h3>
+&lt;h3 id="机器翻译">机器翻译&lt;/h3>
+&lt;ul>
+&lt;li>DeepL&lt;/li>
+&lt;li>Google&lt;/li>
+&lt;li>Bing&lt;/li>
+&lt;li>百度&lt;/li>
+&lt;li>有道&lt;/li>
+&lt;li>腾讯&lt;/li>
+&lt;/ul>
+&lt;h3 id="英文检查纠错工具">英文检查纠错工具&lt;/h3>
+&lt;ul>
+&lt;li>Grammarly
+&lt;ul>
+&lt;li>老牌语法检查工具，免费+付费模式，Chrome上有扩展，手机上有输入法，高级版付费。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>LanguageTool
+&lt;ul>
+&lt;li>开源免费+付费模式，支持语言比 Grammarly 多一些，比如中文。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>QuillBot
+&lt;ul>
+&lt;li>更偏向文章润色。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>DeepL Write
+&lt;ul>
+&lt;li>DeepL 翻译推出的语法和文章检查工具。
+![[../static/Pastedimage20230214001315.png]]&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>ChatGPT/BingChat
+&lt;ul>
+&lt;li>对话式机器人，可以命令它编写英文描述或者检查语法。
+![[../static/Pastedimage20230222225717.png]]
+![[../static/Pastedimage20230223001608.png]]&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h1 id="参考链接">参考链接：&lt;/h1>
+&lt;ul>
+&lt;li>guidelines：
+&lt;ul>
+&lt;li>&lt;a href="https://github.com/github/docs/blob/main/CONTRIBUTING.md">https://github.com/github/docs/blob/main/CONTRIBUTING.md&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://chromium.googlesource.com/external/github.com/google/cel-go/+/d236766a7c6a3ee1ac5a3a155ed5349581e6a793/PULL_REQUEST_TEMPLATE.md">https://chromium.googlesource.com/external/github.com/google/cel-go/+/d236766a7c6a3ee1ac5a3a155ed5349581e6a793/PULL_REQUEST_TEMPLATE.md&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://github.com/golang/go/blob/a7b75972f267aac5607b16b0e9826d56386a92af/CONTRIBUTING.md">https://github.com/golang/go/blob/a7b75972f267aac5607b16b0e9826d56386a92af/CONTRIBUTING.md&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>如何开始：
+&lt;ul>
+&lt;li>&lt;a href="https://opensource.guide/zh-hans/how-to-contribute/">https://opensource.guide/zh-hans/how-to-contribute/&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://medium.com/google-developer-experts/how-to-pull-request-d75ac81449a5">https://medium.com/google-developer-experts/how-to-pull-request-d75ac81449a5&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://github.phodal.com/#/chapter/Github%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97?id=%e6%88%91%e7%9a%84%e7%ac%ac%e4%b8%80%e4%b8%aa-pr">https://github.phodal.com/#/chapter/Github%E6%BC%AB%E6%B8%B8%E6%8C%87%E5%8D%97?id=%e6%88%91%e7%9a%84%e7%ac%ac%e4%b8%80%e4%b8%aa-pr&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://docs.github.com/en/get-started/quickstart/github-flow">https://docs.github.com/en/get-started/quickstart/github-flow&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>CLA/DCO 举例：
+&lt;ul>
+&lt;li>&lt;a href="https://cla.developers.google.com/about/google-individual">https://cla.developers.google.com/about/google-individual&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://opensource.microsoft.com/cla/">https://opensource.microsoft.com/cla/&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://probot.github.io/apps/dco/">https://probot.github.io/apps/dco/&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>英语工具：
+&lt;ul>
+&lt;li>&lt;a href="https://app.grammarly.com/">https://app.grammarly.com/&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://www.deepl.com/write">https://www.deepl.com/write&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://languagetool.org/">https://languagetool.org/&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://quillbot.com/">https://quillbot.com/&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://chat.openai.com/">https://chat.openai.com/&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://www.bing.com/search?q=Bing+AI&amp;amp;showconv=1">https://www.bing.com/search?q=Bing+AI&amp;amp;showconv=1&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>被 merge 的 PR 示例:
+&lt;ul>
+&lt;li>&lt;a href="https://github.com/dapr/go-sdk/pull/310">https://github.com/dapr/go-sdk/pull/310&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://github.com/casbin/mongodb-adapter/pull/49">https://github.com/casbin/mongodb-adapter/pull/49&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></content></item><item><title>Structured concurrency</title><link>https://khuencheng.github.io/posts/structured-concurrency/</link><pubDate>Mon, 01 Aug 2022 23:54:05 +0800</pubDate><guid>https://khuencheng.github.io/posts/structured-concurrency/</guid><description>简介 定义 根据维基百科的解释： Structured concurrency is a programming paradigm aimed at improving the clarity, quality, and development time of a computer program by using a structured approach to concurrent programming. The core concept is the encapsulation of concurrent threads of execution (here encompassing kernel and userland threads and processes) by way of control flow constructs that have clear entry and exit points and that ensure all spawned threads have completed before exit. Such encapsulation allows errors in concurrent threads to be propagated to the control structure&amp;rsquo;s parent scope and</description><content>&lt;h1 id="简介">简介&lt;/h1>
 &lt;h2 id="定义">定义&lt;/h2>
 &lt;p>根据维基百科的解释：
 &lt;strong>Structured concurrency&lt;/strong> is a &lt;a href="https://en.wikipedia.org/wiki/Programming_paradigm" title="Programming paradigm">programming paradigm&lt;/a> aimed at improving the &lt;strong>clarity, quality, and development time&lt;/strong> of a &lt;a href="https://en.wikipedia.org/wiki/Computer_program" title="Computer program">computer program&lt;/a> by using a structured approach to &lt;a href="https://en.wikipedia.org/wiki/Concurrent_computing" title="Concurrent computing">concurrent programming&lt;/a>.&lt;/p>
@@ -320,11 +551,11 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">vi&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">6&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">7&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">result&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">max&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">vi&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">result&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">max&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">vi&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">result&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">vii&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;a&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;b&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;d&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;e&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;f&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;g&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;h&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;i&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;j&amp;#34;&lt;/span>&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">result2&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">min&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">vii&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">result2&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">min&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">vii&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">result2&lt;/span>&lt;span class="p">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Set&lt;/p>
