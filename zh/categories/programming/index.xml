@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Programming on zhoukuncheng's Personal Blog</title><link>https://zhoukuncheng.github.io/zh/categories/programming/</link><description>Recent content in Programming on zhoukuncheng's Personal Blog</description><generator>Hugo -- 0.153.3</generator><language>zh-CN</language><lastBuildDate>Fri, 19 Apr 2024 00:11:00 +0800</lastBuildDate><atom:link href="https://zhoukuncheng.github.io/zh/categories/programming/index.xml" rel="self" type="application/rss+xml"/><item><title>借助 LLM 和 Telegram 机器人，让背单词不再枯燥</title><link>https://zhoukuncheng.github.io/zh/posts/llm-vocabulary-reminder/</link><pubDate>Fri, 19 Apr 2024 00:11:00 +0800</pubDate><guid>https://zhoukuncheng.github.io/zh/posts/llm-vocabulary-reminder/</guid><description>&lt;h2 id="背英语单词总是-abandon-向多邻国--取经让单词主动提醒自己"&gt;背英语单词总是 Abandon？ 向多邻国 🦉 取经，让单词主动提醒自己&lt;/h2&gt;
+&lt;p&gt;背单词，在英语学习中实在无法避免，从小学到研究生，甚至部分工作岗位也需要记单词。&lt;br&gt;
+但抱着单词书啃，或者手机上一板一眼背单词，效率实在太低。现在 LLM 这么火，为何不利用起来？&lt;br&gt;
+毕竟 LLM 中间的 L 就是 Language 的意思，LLM 对付其他严谨任务可能差点意思，但英语等语言可是它的强项，能用技术解决问题，就不要麻烦自己！&lt;br&gt;
+本文就来分享一下，怎么用欧路词典 API、LLM 和 Telegram 机器人搞个英语词汇学习助手，让你背单词不再痛苦。&lt;br&gt;
+当然，也可能用几天就感觉很烦人，毕竟灵感来自多邻国 App🦉。&lt;/p&gt;
+&lt;h3 id="项目目标解放注意力"&gt;项目目标：解放注意力&lt;/h3&gt;
+&lt;p&gt;不用主动去硬背单词，而是让程序代劳，并且要根据单词生成例句和文章，让你更好地理解和记忆。总之，就是让你背单词更轻松、更有效率。&lt;/p&gt;
+&lt;h3 id="系统架构"&gt;系统架构&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="流程" loading="lazy" src="https://zhoukuncheng.github.io/static/mermaid-diagram-2024-04-19-010615.svg"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;欧路词典 API：&lt;/strong&gt; 欧路词典既可以查词又可以背单词，就选它了。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LLM (比如 Groq)：&lt;/strong&gt; 大语言模型，可以根据单词生成各种例句、对话甚至文章，让你更好地理解单词的用法。还可以利用它生成符合雅思&lt;br&gt;
+IELTS 写作考核标准的文章，帮助你学习英语写作。Groq 是目前容易免费获取的 LLM API，可以选择 Mixtral 8x7b 模型。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Telegram 机器人：&lt;/strong&gt; Telegram 平台相比微信，QQ 等自由、API 强大，功能丰富，最适合用它来当提醒工具。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;格式转换：&lt;/strong&gt; 由于 Telegram 消息对 Markdown 的限制，和 Telegraph 写作平台对 HTML 标签的限制，我们需要进行格式转换，确保内容能够正确显示。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="实现方法"&gt;实现方法&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;获取生词列表&lt;/strong&gt;&lt;br&gt;
+接口文档： &lt;a href="https://my.eudic.net/OpenAPI/doc_api_study"&gt;https://my.eudic.net/OpenAPI/doc_api_study&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 获取所有生词本
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 接口说明：
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 请求方式：GET
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 请求地址：https://api.frdic.com/api/open/v1/studylist/category
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 本接口用于获取生词本信息
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 生词本的ID是唯一标识，用于调用其他接口
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;生成例句和文章&lt;/strong&gt;&lt;/p&gt;</description></item><item><title>Traefik 架构与源码分析：深度探索</title><link>https://zhoukuncheng.github.io/zh/posts/traefik-architecture-and-source-code-analysis/</link><pubDate>Sat, 09 Mar 2024 14:54:00 +0800</pubDate><guid>https://zhoukuncheng.github.io/zh/posts/traefik-architecture-and-source-code-analysis/</guid><description>&lt;p&gt;&lt;img alt="Traefik Architecture Diagram" loading="lazy" src="https://doc.traefik.io/traefik/assets/img/traefik-architecture.png"&gt;&lt;/p&gt;
+&lt;p&gt;Traefik 是一个被广泛采用的开源 HTTP 反向代理和负载均衡器，它简化了现代 Web 应用程序的路由和请求负载均衡。它拥有动态配置功能，并支持众多提供商 (providers)，定位为编排复杂部署场景的多功能解决方案。在这篇博文中，我们将深入探讨 Traefik 的架构，并剖析其源代码的关键组件，以便更细致地了解其运行机制。&lt;/p&gt;
+&lt;h3 id="traefik-架构高层概述"&gt;Traefik 架构：高层概述&lt;/h3&gt;
+&lt;p&gt;在其核心，Traefik 的架构由几个主要组件组成，这些组件协同工作以促进动态路由和负载均衡：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;静态配置 (Static Configuration):&lt;/strong&gt; 这些是 Traefik 的基础设置，包括入口点 (entry points)、提供商 (providers) 和 API 访问配置。它们可以通过文件、命令行参数或环境变量来指定。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;动态配置 (Dynamic Configuration):&lt;/strong&gt; 这涉及可根据基础设施状态进行调整的路由规则、服务和中间件。Traefik 与多种提供商（如 Docker、Kubernetes、Consul Catalog 等）的兼容性突显了其动态特性。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;提供商 (Providers):&lt;/strong&gt; 作为 Traefik 与服务发现机制之间的桥梁，提供商的任务是获取并将动态配置传递给 Traefik。每个提供商都是为集成不同技术（如 Docker、Kubernetes 和 Consul）而定制的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;入口点 (Entry Points):&lt;/strong&gt; 这些指定了 Traefik 监听入站流量的网络接口（端口和协议）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;路由器 (Routers):&lt;/strong&gt; 路由器建立通过各种参数（如主机名、路径和头部）匹配传入请求的标准。它们负责将请求引导至适当的服务。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;服务 (Services):&lt;/strong&gt; 服务定义了 Traefik 与处理请求的后端系统进行通信的机制。可以通过不同的负载均衡策略和健康检查对服务进行微调。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;中间件 (Middlewares):&lt;/strong&gt; 作为模块化实体，中间件可以附加到路由器或服务上，启用一系列功能，包括身份验证、速率限制和请求修改。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;插件 (Plugins):&lt;/strong&gt; Traefik 可以通过插件进行扩展，从而增强其功能。插件系统允许开发人员贡献自定义插件。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这些组件的编排如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Traefik 摄取静态配置并开始监控指定的入口点。&lt;/li&gt;
+&lt;li&gt;提供商持续扫描基础设施以查找配置更改，并通过动态配置通道将其转发给 Traefik。&lt;/li&gt;
+&lt;li&gt;Traefik 处理动态配置，更新其内部结构——路由器、服务和中间件——以反映这些更改。&lt;/li&gt;
+&lt;li&gt;当请求进入时，Traefik 根据路由器规则对其进行匹配，并将其引导至指定的服务。&lt;/li&gt;
+&lt;li&gt;服务应用其负载均衡逻辑将请求分发到后端服务器。&lt;/li&gt;
+&lt;li&gt;中间件可以在请求/响应生命周期的各个阶段被调用，以执行其各自的职责。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这种动态架构使 Traefik 能够敏捷地适应基础设施内的变化，自动调整路由配置以与已部署的服务保持一致。&lt;/p&gt;</description></item><item><title>流畅的实时数据流：像 ChatGPT 一样掌握 HTML5 SSE</title><link>https://zhoukuncheng.github.io/zh/posts/html5-sse/</link><pubDate>Sat, 30 Dec 2023 23:11:34 +0800</pubDate><guid>https://zhoukuncheng.github.io/zh/posts/html5-sse/</guid><description>&lt;h1 id="简介"&gt;简介&lt;/h1&gt;
+&lt;p&gt;在像 ChatGPT 这样的服务表现出色的实时交互时代，对于开发者来说，利用能够在应用程序中实现无缝数据流的技术至关重要。本文将深入探讨 HTML5 服务器发送事件 (Server-Sent Events, SSE) 的世界，这是一个类似于对话式 AI 接口背后的强大工具。就像 ChatGPT 通过流式传输数据来提供即时响应一样，SSE 使网络浏览器能够从服务器接收更新，而无需重复的客户端请求。无论你是构建聊天应用程序、实时通知系统，还是任何需要实时数据流的服务，本指南都将为你提供在应用程序中高效实施 SSE 的知识，确保响应迅速且引人入胜的用户体验。&lt;/p&gt;
+&lt;h2 id="理解服务器发送事件-sse"&gt;理解服务器发送事件 (SSE)&lt;/h2&gt;
+&lt;p&gt;服务器发送事件 (SSE) 是一种 Web 技术，它促进了服务器通过已建立的 HTTP 连接向客户端发送实时更新的能力。客户端可以通过 EventSource JavaScript API 接收连续的数据流或消息，该 API 包含在 WHATWG 的 HTML5 规范中。SSE 的官方媒体类型是 &lt;code&gt;text/event-stream&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;下面是一个典型 SSE 响应的说明性示例：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-plaintext" data-lang="plaintext"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;event:message
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;data:The Current Time Is 2023-12-30 23:00:21
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;event:message
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;data:The Current Time Is 2023-12-30 23:00:31
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;event:message
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;data:The Current Time Is 2023-12-30 23:00:41
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;event:message
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;data:The Current Time Is 2023-12-30 23:00:51
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="sse-消息中的字段"&gt;SSE 消息中的字段&lt;/h3&gt;
+&lt;p&gt;通过 SSE 传输的消息可能包含以下字段：&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Python on zhoukuncheng's Personal Blog</title><link>https://zhoukuncheng.github.io/zh/tags/python/</link><description>Recent content in Python on zhoukuncheng's Personal Blog</description><generator>Hugo -- 0.153.3</generator><language>zh-CN</language><lastBuildDate>Fri, 19 Apr 2024 00:11:00 +0800</lastBuildDate><atom:link href="https://zhoukuncheng.github.io/zh/tags/python/index.xml" rel="self" type="application/rss+xml"/><item><title>借助 LLM 和 Telegram 机器人，让背单词不再枯燥</title><link>https://zhoukuncheng.github.io/zh/posts/llm-vocabulary-reminder/</link><pubDate>Fri, 19 Apr 2024 00:11:00 +0800</pubDate><guid>https://zhoukuncheng.github.io/zh/posts/llm-vocabulary-reminder/</guid><description>&lt;h2 id="背英语单词总是-abandon-向多邻国--取经让单词主动提醒自己"&gt;背英语单词总是 Abandon？ 向多邻国 🦉 取经，让单词主动提醒自己&lt;/h2&gt;
+&lt;p&gt;背单词，在英语学习中实在无法避免，从小学到研究生，甚至部分工作岗位也需要记单词。&lt;br&gt;
+但抱着单词书啃，或者手机上一板一眼背单词，效率实在太低。现在 LLM 这么火，为何不利用起来？&lt;br&gt;
+毕竟 LLM 中间的 L 就是 Language 的意思，LLM 对付其他严谨任务可能差点意思，但英语等语言可是它的强项，能用技术解决问题，就不要麻烦自己！&lt;br&gt;
+本文就来分享一下，怎么用欧路词典 API、LLM 和 Telegram 机器人搞个英语词汇学习助手，让你背单词不再痛苦。&lt;br&gt;
+当然，也可能用几天就感觉很烦人，毕竟灵感来自多邻国 App🦉。&lt;/p&gt;
+&lt;h3 id="项目目标解放注意力"&gt;项目目标：解放注意力&lt;/h3&gt;
+&lt;p&gt;不用主动去硬背单词，而是让程序代劳，并且要根据单词生成例句和文章，让你更好地理解和记忆。总之，就是让你背单词更轻松、更有效率。&lt;/p&gt;
+&lt;h3 id="系统架构"&gt;系统架构&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="流程" loading="lazy" src="https://zhoukuncheng.github.io/static/mermaid-diagram-2024-04-19-010615.svg"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;欧路词典 API：&lt;/strong&gt; 欧路词典既可以查词又可以背单词，就选它了。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LLM (比如 Groq)：&lt;/strong&gt; 大语言模型，可以根据单词生成各种例句、对话甚至文章，让你更好地理解单词的用法。还可以利用它生成符合雅思&lt;br&gt;
+IELTS 写作考核标准的文章，帮助你学习英语写作。Groq 是目前容易免费获取的 LLM API，可以选择 Mixtral 8x7b 模型。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Telegram 机器人：&lt;/strong&gt; Telegram 平台相比微信，QQ 等自由、API 强大，功能丰富，最适合用它来当提醒工具。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;格式转换：&lt;/strong&gt; 由于 Telegram 消息对 Markdown 的限制，和 Telegraph 写作平台对 HTML 标签的限制，我们需要进行格式转换，确保内容能够正确显示。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="实现方法"&gt;实现方法&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;获取生词列表&lt;/strong&gt;&lt;br&gt;
+接口文档： &lt;a href="https://my.eudic.net/OpenAPI/doc_api_study"&gt;https://my.eudic.net/OpenAPI/doc_api_study&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 获取所有生词本
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 接口说明：
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 请求方式：GET
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 请求地址：https://api.frdic.com/api/open/v1/studylist/category
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 本接口用于获取生词本信息
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 生词本的ID是唯一标识，用于调用其他接口
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;生成例句和文章&lt;/strong&gt;&lt;/p&gt;</description></item><item><title>Python 与 Go 之间的并发模式差异</title><link>https://zhoukuncheng.github.io/zh/posts/concurrency-model-differences-between-python-go/</link><pubDate>Mon, 30 Aug 2021 23:54:05 +0800</pubDate><guid>https://zhoukuncheng.github.io/zh/posts/concurrency-model-differences-between-python-go/</guid><description>&lt;h2 id="python并发方式"&gt;Python并发方式&lt;/h2&gt;
+&lt;p&gt;在 Python 中，早期并发方式以传统的多进程和多线程为主，类似 Java，同时，有不少第三方的异步方案（gevent/tornado/twisted 等）。&lt;br&gt;
+在 Python 3 时期，官方推出了 asyncio 和 async await 语法，作为 Python 官方的协程实现，而逐渐普及。&lt;/p&gt;
+&lt;h3 id="进程"&gt;进程&lt;/h3&gt;
+&lt;p&gt;多进程编程示例：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Process&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;f&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;hello&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;bob&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;multiprocessing 与 threading 的 API 接近，比较容易创建多进程的程序，是 Python 官方推荐作为绕过多线程 GIL 限制的一种方案。&lt;br&gt;
+但需要注意，创建进程的参数需要能被 pickle 序列化，最好使用 Pipe、Queue 等进程安全的数据结构（&lt;a href="https://docs.python.org/3/library/multiprocessing.html#programming-guidelines"&gt;官方文档的 Programming guidelines&lt;/a&gt;）&lt;/p&gt;
+&lt;h3 id="线程"&gt;线程&lt;/h3&gt;
+&lt;p&gt;多线程代码示例：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;threading&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Thread&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;f&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;hello&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Thread&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;bob&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 线程池方式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;ThreadPoolExecutor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_workers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;executor&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;future&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;executor&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;submit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;pow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;323&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1235&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Cpython 线程的缺陷：GIL（全局解释器锁）&lt;br&gt;
+GIL 是 Cpython 执行 Python 字节码时的一把全局锁，导致解释器在 CPU 密集型任务时不能充分利用多核，而 IO 密集型任务会释放 GIL。 &lt;br&gt;
+如果想绕过 GIL，只能换成多进程方式，或者通过C 扩展绕过。&lt;/p&gt;</description></item><item><title>编译 CPython 心得</title><link>https://zhoukuncheng.github.io/zh/posts/python-build/</link><pubDate>Fri, 24 Jul 2020 01:11:34 +0800</pubDate><guid>https://zhoukuncheng.github.io/zh/posts/python-build/</guid><description>&lt;h2 id="什么情况下需要自己编译-cpython"&gt;什么情况下需要自己编译 CPython&lt;/h2&gt;
+&lt;p&gt;大多数操作系统都提供了编译好的 CPython 版本，一般直接通过包管理器安装就能满足需求，但是某些情况下，就需要自己编译 CPython 来满足特定需求了：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;操作系统提供的 Python 版本太低，并且 Python 官网、系统包管理源没有提供预编译的新版本 Python&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;预编译版本不符合性能、扩展等方面的要求，比如没有开启编译器优化、OpenSSL/SQLite 版本不满足要求等&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;参与 CPython 开发或者尝鲜，尝试 Alpha/Beta/RC 等版本的 Python&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;​ &lt;br&gt;
+​&lt;/p&gt;
+&lt;h2 id="低版本-linux-发行版上编译-cpython-时的注意事项"&gt;低版本 Linux 发行版上编译 CPython 时的注意事项&lt;/h2&gt;
+&lt;h3 id="openssl"&gt;OpenSSL&lt;/h3&gt;
+&lt;p&gt;因为 CentOS 6 官方源中的 OpenSSL 版本过低，不满足 Python 3.7 及之后的要求，所以直接 configure &amp;amp; make 会报错，解决办法：&lt;/p&gt;
+&lt;p&gt;参考 &lt;a href="https://benad.me/blog/2018/07/17/python-3.7-on-centos-6/"&gt;Python 3.7 on CentOS 6&lt;/a&gt; , 提前编译 OpenSSL, 编译 CPython 时修改 Modules/Setup 文件，并且指定环境变量 &lt;code&gt;LDFLAGS=&amp;quot;-Wl,-rpath=/usr/local/openssl11/lib&amp;quot;&lt;/code&gt; , 指定参数 &lt;code&gt;-with-openssl=/usr/local/openssl11&lt;/code&gt; 。&lt;/p&gt;
+&lt;h3 id="sqlite"&gt;SQLite&lt;/h3&gt;
+&lt;p&gt;Jupyter 等软件依赖 SQLite, 所以编译 CPython 时不仅要注意 SQLite 版本，也要开启 &lt;code&gt;--enable-loadable-sqlite-extensions&lt;/code&gt; , 参考：&lt;a href="https://stackoverflow.com/questions/57977481/how-to-use-enable-load-extension-from-sqlite3"&gt;How to use enable_load_extension from sqlite3?&lt;/a&gt;&lt;/p&gt;</description></item></channel></rss>

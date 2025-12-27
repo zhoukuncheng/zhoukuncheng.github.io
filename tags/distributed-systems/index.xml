@@ -1,33 +1,29 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Distributed Systems on 编程随笔</title>
-    <link>https://CeresCa.github.io/tags/distributed-systems/</link>
-    <description>Recent content in Distributed Systems on 编程随笔</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>zh</language>
-    <lastBuildDate>Tue, 08 Sep 2020 01:43:18 +0800</lastBuildDate>
-    
-	<atom:link href="https://CeresCa.github.io/tags/distributed-systems/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>MIT 6.824: Distributed Systems 系列：Map Reduce</title>
-      <link>https://CeresCa.github.io/posts/mit-6824-02-mr/</link>
-      <pubDate>Tue, 08 Sep 2020 01:43:18 +0800</pubDate>
-      
-      <guid>https://CeresCa.github.io/posts/mit-6824-02-mr/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>MIT 6.824: Distributed Systems 系列：简介</title>
-      <link>https://CeresCa.github.io/posts/mit-6824-01-intro/</link>
-      <pubDate>Fri, 24 Jul 2020 14:26:34 +0800</pubDate>
-      
-      <guid>https://CeresCa.github.io/posts/mit-6824-01-intro/</guid>
-      <description></description>
-    </item>
-    
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Distributed Systems on zhoukuncheng's Personal Blog</title><link>https://zhoukuncheng.github.io/tags/distributed-systems/</link><description>Recent content in Distributed Systems on zhoukuncheng's Personal Blog</description><generator>Hugo -- 0.153.3</generator><language>en</language><lastBuildDate>Tue, 15 Sep 2020 09:22:15 +0800</lastBuildDate><atom:link href="https://zhoukuncheng.github.io/tags/distributed-systems/index.xml" rel="self" type="application/rss+xml"/><item><title>Notes on 'Distributed Systems for Fun and Profit' (Part 2)</title><link>https://zhoukuncheng.github.io/posts/distributed-systems-for-fun-and-profit-part2/</link><pubDate>Tue, 15 Sep 2020 09:22:15 +0800</pubDate><guid>https://zhoukuncheng.github.io/posts/distributed-systems-for-fun-and-profit-part2/</guid><description>&lt;h2 id="2-abstractions-at-different-levels"&gt;2. Abstractions at Different Levels&lt;/h2&gt;
+&lt;h3 id="system-model"&gt;System Model&lt;/h3&gt;
+&lt;p&gt;Programs in distributed systems:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Run concurrently on independent nodes&lt;/li&gt;
+&lt;li&gt;Communicate via network connections that may introduce uncertainty and message loss&lt;/li&gt;
+&lt;li&gt;Have no shared memory or shared clock&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The system model enumerates many assumptions related to specific system designs, covering the environment and facilities where the distributed system is implemented:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What capabilities nodes have and how they fail&lt;/li&gt;
+&lt;li&gt;How communication links operate and how they might fail&lt;/li&gt;
+&lt;li&gt;Properties of the overall system, such as assumptions about time and order&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A robust system model makes the weakest assumptions, while strong assumptions create system models that are easier to reason about.&lt;/p&gt;</description></item><item><title>Notes on 'Distributed Systems for Fun and Profit' (Part 1)</title><link>https://zhoukuncheng.github.io/posts/distributed-systems-for-fun-and-profit-part1/</link><pubDate>Fri, 11 Sep 2020 01:51:32 +0800</pubDate><guid>https://zhoukuncheng.github.io/posts/distributed-systems-for-fun-and-profit-part1/</guid><description>&lt;h2 id="0-preface"&gt;0. Preface&lt;/h2&gt;
+&lt;p&gt;&amp;ldquo;Distributed Systems for Fun and Profit&amp;rdquo; is a booklet introducing distributed systems freely published &lt;a href="http://book.mixu.net/distsys/index.html"&gt;online&lt;/a&gt; by mixu in 2013.&lt;/p&gt;
+&lt;p&gt;Two outcomes of distribution:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Information travels at the speed of light&lt;/li&gt;
+&lt;li&gt;Independent nodes fail independently&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Distributed systems deal with the problems of distance and multiple nodes.&lt;/p&gt;
+&lt;h2 id="1-distributed-systems-at-a-high-level"&gt;1. Distributed Systems at a High Level&lt;/h2&gt;
+&lt;p&gt;Basic tasks of a computer:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Storage&lt;/li&gt;
+&lt;li&gt;Computation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Distributed programming is using multiple machines to solve the same problem as on a single machine, usually because the problem has outgrown the capacity of a single machine.&lt;/p&gt;</description></item></channel></rss>
